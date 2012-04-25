@@ -13,37 +13,34 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.dthielke.herochat.Herochat;
+import com.ensifera.animosity.craftirc.CraftIRC;
+import com.ensifera.animosity.craftirc.EndPoint;
+import com.ensifera.animosity.craftirc.RelayedMessage;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
-//import com.ensifera.animosity.craftirc.CraftIRC;
-//import com.ensifera.animosity.craftirc.EndPoint;
-//import com.ensifera.animosity.craftirc.RelayedMessage;
-import com.herocraftonline.dthielke.herochat.HeroChat;
-
-
-public class iAuction extends JavaPlugin implements Listener{
+public class iAuction extends JavaPlugin implements Listener, EndPoint {
 	public class CoolRunnable implements Runnable {
-	    
-	    private iAuction plugin;
 
-	    public CoolRunnable(iAuction plugin){
-		this.plugin = plugin;
-	    }
+		private iAuction plugin;
 
-	@Override
-	public void run() {
-	    plugin.inCooldown=false;
+		public CoolRunnable(iAuction plugin) {
+			this.plugin = plugin;
+		}
+
+		@Override
+		public void run() {
+			plugin.inCooldown = false;
+
+		}
 
 	}
-	
-
-    }
 
 	private Auction auction;
-	private boolean circEnabled;
-	//private CraftIRC craftIRC;
-	private com.herocraftonline.dthielke.herochat.channels.Channel c;
+	private com.dthielke.herochat.Channel c;
 	private boolean hcEnabled;
 	private int task;
 	private Logger log = Logger.getLogger("Minecraft");
@@ -59,14 +56,16 @@ public class iAuction extends JavaPlugin implements Listener{
 	private boolean inCooldown;
 	private String tag;
 	private Economy economy;
-	
+	private boolean circEnabled;
+	private CraftIRC circ;
+
 	public void onDisable() {
 		System.out.println("[iAuction] Disabled!");
 	}
 
 	public void onEnable() {
 		getCommand("auction").setExecutor(new AuctionCommand(this));
-		
+
 		setupConfig();
 		setupColours();
 		if (!setupEconomy()) {
@@ -79,25 +78,46 @@ public class iAuction extends JavaPlugin implements Listener{
 		if (getConfig().getBoolean("channelchat.enable"))
 			enableChannelChat();
 		if (getConfig().getBoolean("craftirc.enable"))
-			//enableCraftIRC();
-		this.getServer().getPluginManager().registerEvents(this,this);
+			enableCraftIRC();
+		this.getServer().getPluginManager().registerEvents(this, this);
 		try {
-		    Metrics metrics = new Metrics(this);
-		    metrics.start();
+			Metrics metrics = new Metrics(this);
+			metrics.start();
 		} catch (IOException e) {
-		    // Failed to submit the stats :-(
+			// Failed to submit the stats :-(
 		}
 		log.info("[iAuction] Enabled!");
-		
+
+	}
+
+	private void enableCraftIRC() {
+		Plugin p = getServer().getPluginManager().getPlugin("CraftIRC");
+		if (p != null) {
+			if (!p.isEnabled())
+				getServer().getPluginManager().enablePlugin(p);
+			circ = (CraftIRC) p;
+
+			circ.registerEndPoint(getConfig().getString("craftirc.tag"), this);
+			System.out.println(tag + " CraftIRC system has enabled properly!");
+			this.circEnabled = true;
+			return;
+
+		} else {
+			System.out.println(tag
+					+ " CraftIRC system is enabled but could not be loaded!");
+		}
+		this.hcEnabled = false;
+
 	}
 
 	private void enableChannelChat() {
-	    String ccChannelName = getConfig().getString("channelchat.channel");
+		String ccChannelName = getConfig().getString("channelchat.channel");
 		Plugin p = getServer().getPluginManager().getPlugin("ChannelChat");
 		if (p != null) {
 			if (!p.isEnabled())
 				getServer().getPluginManager().enablePlugin(p);
-			com.feildmaster.channelchat.channel.ChannelManager cm = com.feildmaster.channelchat.channel.ChannelManager.getManager();
+			com.feildmaster.channelchat.channel.ChannelManager cm = com.feildmaster.channelchat.channel.ChannelManager
+					.getManager();
 
 			this.cc = cm.getChannel(ccChannelName);
 			if ((this.cc.getName().equalsIgnoreCase(ccChannelName))
@@ -114,18 +134,23 @@ public class iAuction extends JavaPlugin implements Listener{
 					.println("[iAuction] ChannelChat system is enabled but could not be loaded!");
 		}
 		this.ccEnabled = false;
-	    
+
 	}
 
 	private void setupColours() {
-	   titlecolour = ChatColor.getByChar(getConfig().getString("colour.title"));
-	   fieldcolour = ChatColor.getByChar(getConfig().getString("colour.field"));
-	   auxcolour = ChatColor.getByChar(getConfig().getString("colour.aux"));
-	   valuecolour = ChatColor.getByChar(getConfig().getString("colour.value"));
-	   errorcolour = ChatColor.getByChar(getConfig().getString("colour.error"));
-	   helpcolour = ChatColor.getByChar(getConfig().getString("colour.help"));
-	   helpvaluecolour = ChatColor.getByChar(getConfig().getString("colour.helpvalue"));
-	   tag = getConfig().getString("tag");
+		titlecolour = ChatColor
+				.getByChar(getConfig().getString("colour.title"));
+		fieldcolour = ChatColor
+				.getByChar(getConfig().getString("colour.field"));
+		auxcolour = ChatColor.getByChar(getConfig().getString("colour.aux"));
+		valuecolour = ChatColor
+				.getByChar(getConfig().getString("colour.value"));
+		errorcolour = ChatColor
+				.getByChar(getConfig().getString("colour.error"));
+		helpcolour = ChatColor.getByChar(getConfig().getString("colour.help"));
+		helpvaluecolour = ChatColor.getByChar(getConfig().getString(
+				"colour.helpvalue"));
+		tag = getConfig().getString("tag");
 	}
 
 	private void setupConfig() {
@@ -139,10 +164,10 @@ public class iAuction extends JavaPlugin implements Listener{
 		c.addDefault("bidding.minincrement", Integer.valueOf(0));
 		c.addDefault("herochat.enable", Boolean.valueOf(false));
 		c.addDefault("herochat.channel", "trade");
+		c.addDefault("craftirc.enable", Boolean.valueOf(false));
+		c.addDefault("craftirc.tag", "tag");
 		c.addDefault("channelchat.enable", Boolean.valueOf(false));
 		c.addDefault("channelchat.channel", "trade");
-		c.addDefault("craftirc.enable", Boolean.valueOf(false));
-		c.addDefault("craftirc.tag", "");
 		c.addDefault("antisnipe.enabled", Boolean.valueOf(false));
 		c.addDefault("antisnipe.value", Integer.valueOf(5));
 		c.addDefault("antisnipe.endtime", Integer.valueOf(0));
@@ -155,7 +180,7 @@ public class iAuction extends JavaPlugin implements Listener{
 		c.addDefault("colour.help", "b");
 		c.addDefault("colour.helpvalue", "e");
 		c.addDefault("tag", "[iAuction]");
-		c.addDefault("allowincreative",Boolean.valueOf(true));
+		c.addDefault("allowincreative", Boolean.valueOf(true));
 
 		c.options().copyDefaults(true);
 
@@ -164,70 +189,52 @@ public class iAuction extends JavaPlugin implements Listener{
 
 	public void enableHeroChat() {
 		String hcChannelName = getConfig().getString("herochat.channel");
-		Plugin p = getServer().getPluginManager().getPlugin("HeroChat");
+		Plugin p = getServer().getPluginManager().getPlugin("Herochat");
 		if (p != null) {
 			if (!p.isEnabled())
 				getServer().getPluginManager().enablePlugin(p);
-			com.herocraftonline.dthielke.herochat.channels.ChannelManager cm = ((HeroChat) p).getChannelManager();
+			com.dthielke.herochat.ChannelManager cm = Herochat
+					.getChannelManager();
 
 			this.c = cm.getChannel(hcChannelName);
 			if ((this.c.getName().equalsIgnoreCase(hcChannelName))
 					|| (this.c.getNick().equalsIgnoreCase(hcChannelName))) {
-				System.out
-						.println(tag + " Herochat system has enabled properly!");
+				System.out.println(tag
+						+ " Herochat system has enabled properly!");
 				this.hcEnabled = true;
 				return;
 			}
-			System.out
-					.println(tag + " Your channel spesified does not exist");
+			System.out.println(tag + " Your channel spesified does not exist");
 		} else {
-			System.out
-					.println(tag + " HeroChat system is enabled but could not be loaded!");
+			System.out.println(tag
+					+ " HeroChat system is enabled but could not be loaded!");
 		}
 		this.hcEnabled = false;
 	}
 
-//	public void enableCraftIRC() {
-//		Plugin p = getServer().getPluginManager().getPlugin("CraftIRC");
-//		if (p == null) {
-//			System.out.println(tag + " WARNING! CraftIRC not detected!");
-//			this.circEnabled = false;
-//		} else {
-//			try {
-//				System.out
-//						.println(tag + " CraftIRC found, enabling support...");
-//				this.craftIRC = ((CraftIRC) p);
-//			} catch (ClassCastException ex) {
-//				ex.printStackTrace();
-//				System.out
-//						.println("[SEVERE]"+ tag + " Unable to link to CraftIRC!");
-//				this.circEnabled = false;
-//			}
-//		}
-//	}
-	
-	private Boolean setupEconomy()
-    {
-        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+	private Boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer()
+				.getServicesManager().getRegistration(
+						net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
 
-        return (economy != null);
-    }
+		return (economy != null);
+	}
 
 	public Economy getEco() {
 		return this.economy;
 	}
 
 	public void New(ItemStack l, Player o, int t, float b) {
-	    if(!inCooldown){
-		this.auction = new Auction(this, l, o, t, b);
-		this.task = getServer().getScheduler().scheduleAsyncRepeatingTask(this,
-				this.auction, 0L, 20L);
-	    }else{
-		warn(o, "Cooldown Period Active!");
-	    }
+		if (!inCooldown) {
+			this.auction = new Auction(this, l, o, t, b);
+			this.task = getServer().getScheduler().scheduleAsyncRepeatingTask(
+					this, this.auction, 0L, 20L);
+		} else {
+			warn(o, "Cooldown Period Active!");
+		}
 	}
 
 	public Auction getAuc() {
@@ -238,7 +245,9 @@ public class iAuction extends JavaPlugin implements Listener{
 		this.auction = null;
 		getServer().getScheduler().cancelTask(this.task);
 		this.inCooldown = true;
-		getServer().getScheduler().scheduleAsyncDelayedTask(this, new CoolRunnable(this) , getConfig().getInt("auction.cooldown") * 20L);
+		getServer().getScheduler().scheduleAsyncDelayedTask(this,
+				new CoolRunnable(this),
+				getConfig().getInt("auction.cooldown") * 20L);
 	}
 
 	public void warn(Player player, String msg) {
@@ -247,25 +256,61 @@ public class iAuction extends JavaPlugin implements Listener{
 
 	public void broadcast(String msg) {
 		if (this.hcEnabled) {
-			this.c.sendMessage(tag, msg, this.c.getMsgFormat(),
-					this.c.getPlayers(), false, true);
-		} else if(this.ccEnabled) {
-		    this.cc.sendMessage(tag +  msg);
-		}else{
-			getServer().broadcastMessage("[iAuction] " + msg);
+			this.c.announce(tag + " " + msg);
+		} else if (this.ccEnabled) {
+			this.cc.sendMessage(tag + msg);
+		} else {
+			getServer().broadcastMessage(tag + " " + msg);
 		}
 		if (this.circEnabled) {
-			//RelayedMessage rm = this.craftIRC.newMsgToTag(this,tag, "");
-			//rm.setField("message", msg);
+			RelayedMessage rm = circ.newMsg(this, null, "chat");
+			rm.setField("message", msg.replaceAll("(\u00A7([A-Fa-f0-9])?)", ""));
+			rm.setField("sender", "iAuction");
+			rm.setField("realSender", "iAuction");
+			rm.setField("prefix", "(");
+			rm.setField("suffix", ")");
+			rm.post();
 		}
 	}
+
 	@EventHandler
-	public void quitChecker(PlayerQuitEvent e){
-	    if (!(this.auction == null)){
-		if(this.auction.owner == e.getPlayer()){
-		    this.auction.stop();
+	public void quitChecker(PlayerQuitEvent e) {
+		if (!(this.auction == null)) {
+			if (this.auction.owner == e.getPlayer()) {
+				this.auction.stop();
+			}
 		}
-	    }
+	}
+
+	@Override
+	public boolean adminMessageIn(RelayedMessage arg0) {
+
+		return false;
+	}
+
+	@Override
+	public Type getType() {
+		return null;
+	}
+
+	@Override
+	public List<String> listDisplayUsers() {
+		return null;
+	}
+
+	@Override
+	public List<String> listUsers() {
+		return null;
+	}
+
+	@Override
+	public void messageIn(RelayedMessage arg0) {
+
+	}
+
+	@Override
+	public boolean userMessageIn(String arg0, RelayedMessage arg1) {
+		return false;
 	}
 
 }

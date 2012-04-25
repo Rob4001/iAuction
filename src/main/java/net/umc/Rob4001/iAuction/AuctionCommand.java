@@ -172,7 +172,7 @@ public class AuctionCommand implements CommandExecutor {
 			
 			
 			if(args[2].equalsIgnoreCase("hand")){
-				if(player.getItemInHand() == null ){
+				if(player.getInventory().getItemInHand().getTypeId() == 0 ){
 					plugin.warn(player, "There is nothing in your hand!");
 					return;
 				}

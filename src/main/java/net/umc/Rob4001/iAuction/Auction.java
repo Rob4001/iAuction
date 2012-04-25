@@ -18,6 +18,7 @@ public class Auction implements Runnable {
 	double half;
 	public Player winner;
 	private iAuction plugin;
+	private boolean fin;
 
 	public Auction(iAuction pl, ItemStack l, Player o, int t, float b) {
 		lot = l;
@@ -29,6 +30,7 @@ public class Auction implements Runnable {
 		timeLeft = time;
 		half = java.lang.Math.floor(time / 2);
 		new InventoryManager(owner).remove(lot, true, true);
+		fin = false;
 		startInfo();
 
 	}
@@ -78,6 +80,7 @@ public class Auction implements Runnable {
 					+ plugin.fieldcolour + " seconds left to bid!");
 		}
 		if (timeLeft == 0) {
+			fin = true;
 			stop();
 		}
 		timeLeft -= 1;
@@ -123,6 +126,11 @@ public class Auction implements Runnable {
 	}
 
 	public boolean bid(Player bidder, float b) {
+		if (fin){
+			bidder.sendMessage(plugin.errorcolour
+					+ "The auction has ended");
+			return true;
+		}
 		if (bidder == owner) {
 			bidder.sendMessage(plugin.errorcolour
 					+ "You can not bid on your own auction!");

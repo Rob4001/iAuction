@@ -39,6 +39,16 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/ChannelChat.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>com.ensifera.animosity</groupId>
+			<artifactId>craftirc</artifactId>
+			<version>3.6</version>
+		</dependency>
+		<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.10</version>
+		</dependency>
 	</dependencies>
 	
 	 <!-- Build -->
