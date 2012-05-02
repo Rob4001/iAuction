@@ -1,8 +1,9 @@
 package net.umc.Rob4001.iAuction;
 
 import net.milkbowl.vault.economy.Economy;
-
+import net.milkbowl.vault.item.Items;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,14 +16,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.dthielke.herochat.Herochat;
 import com.ensifera.animosity.craftirc.CraftIRC;
-import com.ensifera.animosity.craftirc.EndPoint;
 import com.ensifera.animosity.craftirc.RelayedMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class iAuction extends JavaPlugin implements Listener, EndPoint {
+public class iAuction extends JavaPlugin implements Listener{
 	public class CoolRunnable implements Runnable {
 
 		private iAuction plugin;
@@ -56,8 +57,10 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 	private boolean inCooldown;
 	private String tag;
 	private Economy economy;
-	private boolean circEnabled;
+	private boolean circEnabled = false;
 	private CraftIRC circ;
+	private ArrayList<Material> bi;
+	//private AuctionCraftIRCEP circep;
 
 	public void onDisable() {
 		System.out.println("[iAuction] Disabled!");
@@ -67,6 +70,10 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 		getCommand("auction").setExecutor(new AuctionCommand(this));
 
 		setupConfig();
+		List<String> bil = getConfig().getStringList("blacklist");
+		for (String b : bil){
+			bi.add(Items.itemByString(b).material);
+		}
 		setupColours();
 		if (!setupEconomy()) {
 			log.warning("[iAuction] Economy Failure! Make sure you have an economy and Vault in your plugins folder ");
@@ -96,8 +103,10 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 			if (!p.isEnabled())
 				getServer().getPluginManager().enablePlugin(p);
 			circ = (CraftIRC) p;
+			
+			//circep = new AuctionCraftIRCEP();
 
-			circ.registerEndPoint(getConfig().getString("craftirc.tag"), this);
+			//circ.registerEndPoint(getConfig().getString("craftirc.tag"), circep);
 			System.out.println(tag + " CraftIRC system has enabled properly!");
 			this.circEnabled = true;
 			return;
@@ -181,6 +190,9 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 		c.addDefault("colour.helpvalue", "e");
 		c.addDefault("tag", "[iAuction]");
 		c.addDefault("allowincreative", Boolean.valueOf(true));
+		c.addDefault("blacklist","- bedrock");
+		c.addDefault("blacklist", new ArrayList<String>());
+	
 
 		c.options().copyDefaults(true);
 
@@ -263,13 +275,13 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 			getServer().broadcastMessage(tag + " " + msg);
 		}
 		if (this.circEnabled) {
-			RelayedMessage rm = circ.newMsg(this, null, "chat");
-			rm.setField("message", msg.replaceAll("(\u00A7([A-Fa-f0-9])?)", ""));
-			rm.setField("sender", "iAuction");
-			rm.setField("realSender", "iAuction");
-			rm.setField("prefix", "(");
-			rm.setField("suffix", ")");
-			rm.post();
+			//RelayedMessage rm = circ.newMsg(circep, null, "chat");
+			//rm.setField("message", msg.replaceAll("(\u00A7([A-Fa-f0-9])?)", ""));
+			//rm.setField("sender", "iAuction");
+			//rm.setField("realSender", "iAuction");
+			//rm.setField("prefix", "(");
+			//rm.setField("suffix", ")");
+			//rm.post();
 		}
 	}
 
@@ -282,35 +294,10 @@ public class iAuction extends JavaPlugin implements Listener, EndPoint {
 		}
 	}
 
-	@Override
-	public boolean adminMessageIn(RelayedMessage arg0) {
 
-		return false;
-	}
 
-	@Override
-	public Type getType() {
-		return null;
-	}
-
-	@Override
-	public List<String> listDisplayUsers() {
-		return null;
-	}
-
-	@Override
-	public List<String> listUsers() {
-		return null;
-	}
-
-	@Override
-	public void messageIn(RelayedMessage arg0) {
-
-	}
-
-	@Override
-	public boolean userMessageIn(String arg0, RelayedMessage arg1) {
-		return false;
+	public ArrayList<Material> getBannedItems() {
+		return bi;
 	}
 
 }

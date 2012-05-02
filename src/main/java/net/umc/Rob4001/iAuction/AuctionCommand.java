@@ -152,6 +152,7 @@ public class AuctionCommand implements CommandExecutor {
 			plugin.warn(player, "You are not allowed to auction in creative mode!");
 			return;
 		}
+		
 		if (args.length >= 5) {
 			if (!player.hasPermission("auction.start")) {
 				this.plugin.warn(player, "You do not have permission!");
@@ -186,6 +187,11 @@ public class AuctionCommand implements CommandExecutor {
 					return;
 				}
 			lot = new ItemStack(ii.getType(),amount,ii.getSubTypeId());
+			}
+			
+			if(plugin.getBannedItems().contains(lot.getType())){
+				this.plugin.warn(player, "You are not allowed to auction this item!");
+				return;
 			}
 			
 			try{
