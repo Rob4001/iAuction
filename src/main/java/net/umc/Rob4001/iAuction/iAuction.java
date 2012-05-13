@@ -59,7 +59,7 @@ public class iAuction extends JavaPlugin implements Listener{
 	private Economy economy;
 	private boolean circEnabled = false;
 	private CraftIRC circ;
-	private ArrayList<Material> bi;
+	private ArrayList<Material> bi = new ArrayList<Material>();
 	//private AuctionCraftIRCEP circep;
 
 	public void onDisable() {
@@ -191,7 +191,7 @@ public class iAuction extends JavaPlugin implements Listener{
 		c.addDefault("tag", "[iAuction]");
 		c.addDefault("allowincreative", Boolean.valueOf(true));
 		c.addDefault("blacklist","- bedrock");
-		c.addDefault("blacklist", new ArrayList<String>());
+		//c.addDefault("blacklist", new ArrayList<String>());
 	
 
 		c.options().copyDefaults(true);

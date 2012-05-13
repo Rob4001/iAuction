@@ -1,6 +1,6 @@
 name: iAuction
 main: net.umc.Rob4001.iAuction.iAuction
-version: 4.2.11
+version: 4.2.12
 author: Rob4001
 description: Auctions for iConomy plugin for Bukkit Original by Zazara107
 depend: [Vault]

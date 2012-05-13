@@ -2,6 +2,8 @@ package net.umc.Rob4001.iAuction;
 
 import java.util.Map.Entry;
 
+import net.milkbowl.vault.item.ItemInfo;
+import net.milkbowl.vault.item.Items;
 import net.umc.dev.InventoryManager;
 
 import org.bukkit.enchantments.Enchantment;
@@ -39,8 +41,15 @@ public class Auction implements Runnable {
 		plugin.broadcast(plugin.auxcolour + "-----[ " + plugin.titlecolour
 				+ "Auction Information" + plugin.auxcolour + " ]-----");
 		StringBuilder itemthing = new StringBuilder(plugin.fieldcolour
-				+ "Auctioned Item: " + plugin.valuecolour + net.milkbowl.vault.item.Items.itemByStack(lot).getName()
-				+ plugin.fieldcolour + " [" + plugin.valuecolour
+				+ "Auctioned Item: " + plugin.valuecolour) ;
+		ItemInfo ie  = Items.itemByStack(lot);
+		if (ie != null){
+			itemthing.append(Items.itemByStack(lot).getName());
+		}else{
+			itemthing.append(Items.itemById(lot.getTypeId()).getId() + ":" + lot.getDurability());
+		}
+		
+		itemthing.append(plugin.fieldcolour + " [" + plugin.valuecolour
 				+ lot.getTypeId() + plugin.fieldcolour + "]");
 
 		if (!lot.getEnchantments().isEmpty()) {
