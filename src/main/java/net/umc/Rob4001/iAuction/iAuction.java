@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class iAuction extends JavaPlugin implements Listener{
+public class iAuction extends JavaPlugin implements Listener {
 	public class CoolRunnable implements Runnable {
 
-		private iAuction plugin;
+		private final iAuction plugin;
 
 		public CoolRunnable(iAuction plugin) {
 			this.plugin = plugin;
@@ -44,7 +44,7 @@ public class iAuction extends JavaPlugin implements Listener{
 	private com.dthielke.herochat.Channel c;
 	private boolean hcEnabled;
 	private int task;
-	private Logger log = Logger.getLogger("Minecraft");
+	private final Logger log = Logger.getLogger("Minecraft");
 	public ChatColor auxcolour;
 	public ChatColor fieldcolour;
 	public ChatColor valuecolour;
@@ -59,19 +59,22 @@ public class iAuction extends JavaPlugin implements Listener{
 	private Economy economy;
 	private boolean circEnabled = false;
 	private CraftIRC circ;
-	private ArrayList<Material> bi = new ArrayList<Material>();
-	//private AuctionCraftIRCEP circep;
+	private final ArrayList<Material> bi = new ArrayList<Material>();
 
+	// private AuctionCraftIRCEP circep;
+
+	@Override
 	public void onDisable() {
 		System.out.println("[iAuction] Disabled!");
 	}
 
+	@Override
 	public void onEnable() {
 		getCommand("auction").setExecutor(new AuctionCommand(this));
 
 		setupConfig();
 		List<String> bil = getConfig().getStringList("blacklist");
-		for (String b : bil){
+		for (String b : bil) {
 			bi.add(Items.itemByString(b).material);
 		}
 		setupColours();
@@ -103,10 +106,11 @@ public class iAuction extends JavaPlugin implements Listener{
 			if (!p.isEnabled())
 				getServer().getPluginManager().enablePlugin(p);
 			circ = (CraftIRC) p;
-			
-			//circep = new AuctionCraftIRCEP();
 
-			//circ.registerEndPoint(getConfig().getString("craftirc.tag"), circep);
+			// circep = new AuctionCraftIRCEP();
+
+			// circ.registerEndPoint(getConfig().getString("craftirc.tag"),
+			// circep);
 			System.out.println(tag + " CraftIRC system has enabled properly!");
 			this.circEnabled = true;
 			return;
@@ -157,8 +161,8 @@ public class iAuction extends JavaPlugin implements Listener{
 		errorcolour = ChatColor
 				.getByChar(getConfig().getString("colour.error"));
 		helpcolour = ChatColor.getByChar(getConfig().getString("colour.help"));
-		helpvaluecolour = ChatColor.getByChar(getConfig().getString(
-				"colour.helpvalue"));
+		helpvaluecolour = ChatColor.getByChar(getConfig()
+				.getString("colour.helpvalue"));
 		tag = getConfig().getString("tag");
 	}
 
@@ -190,9 +194,8 @@ public class iAuction extends JavaPlugin implements Listener{
 		c.addDefault("colour.helpvalue", "e");
 		c.addDefault("tag", "[iAuction]");
 		c.addDefault("allowincreative", Boolean.valueOf(true));
-		c.addDefault("blacklist","- bedrock");
-		//c.addDefault("blacklist", new ArrayList<String>());
-	
+		c.addDefault("blacklist", "- bedrock");
+		// c.addDefault("blacklist", new ArrayList<String>());
 
 		c.options().copyDefaults(true);
 
@@ -207,7 +210,6 @@ public class iAuction extends JavaPlugin implements Listener{
 				getServer().getPluginManager().enablePlugin(p);
 			com.dthielke.herochat.ChannelManager cm = Herochat
 					.getChannelManager();
-
 			this.c = cm.getChannel(hcChannelName);
 			if ((this.c.getName().equalsIgnoreCase(hcChannelName))
 					|| (this.c.getNick().equalsIgnoreCase(hcChannelName))) {
@@ -226,8 +228,8 @@ public class iAuction extends JavaPlugin implements Listener{
 
 	private Boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider = getServer()
-				.getServicesManager().getRegistration(
-						net.milkbowl.vault.economy.Economy.class);
+				.getServicesManager()
+				.getRegistration(net.milkbowl.vault.economy.Economy.class);
 		if (economyProvider != null) {
 			economy = economyProvider.getProvider();
 		}
@@ -242,8 +244,8 @@ public class iAuction extends JavaPlugin implements Listener{
 	public void New(ItemStack l, Player o, int t, float b) {
 		if (!inCooldown) {
 			this.auction = new Auction(this, l, o, t, b);
-			this.task = getServer().getScheduler().scheduleAsyncRepeatingTask(
-					this, this.auction, 0L, 20L);
+			this.task = getServer().getScheduler()
+					.scheduleAsyncRepeatingTask(this, this.auction, 0L, 20L);
 		} else {
 			warn(o, "Cooldown Period Active!");
 		}
@@ -257,9 +259,10 @@ public class iAuction extends JavaPlugin implements Listener{
 		this.auction = null;
 		getServer().getScheduler().cancelTask(this.task);
 		this.inCooldown = true;
-		getServer().getScheduler().scheduleAsyncDelayedTask(this,
-				new CoolRunnable(this),
-				getConfig().getInt("auction.cooldown") * 20L);
+		getServer()
+				.getScheduler()
+				.scheduleAsyncDelayedTask(this, new CoolRunnable(this), getConfig()
+						.getInt("auction.cooldown") * 20L);
 	}
 
 	public void warn(Player player, String msg) {
@@ -275,13 +278,14 @@ public class iAuction extends JavaPlugin implements Listener{
 			getServer().broadcastMessage(tag + " " + msg);
 		}
 		if (this.circEnabled) {
-			//RelayedMessage rm = circ.newMsg(circep, null, "chat");
-			//rm.setField("message", msg.replaceAll("(\u00A7([A-Fa-f0-9])?)", ""));
-			//rm.setField("sender", "iAuction");
-			//rm.setField("realSender", "iAuction");
-			//rm.setField("prefix", "(");
-			//rm.setField("suffix", ")");
-			//rm.post();
+			// RelayedMessage rm = circ.newMsg(circep, null, "chat");
+			// rm.setField("message", msg.replaceAll("(\u00A7([A-Fa-f0-9])?)",
+			// ""));
+			// rm.setField("sender", "iAuction");
+			// rm.setField("realSender", "iAuction");
+			// rm.setField("prefix", "(");
+			// rm.setField("suffix", ")");
+			// rm.post();
 		}
 	}
 
@@ -293,8 +297,6 @@ public class iAuction extends JavaPlugin implements Listener{
 			}
 		}
 	}
-
-
 
 	public ArrayList<Material> getBannedItems() {
 		return bi;
