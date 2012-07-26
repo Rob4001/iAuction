@@ -61,6 +61,7 @@ public class AuctionCommand implements CommandExecutor {
 		if ((main.equalsIgnoreCase("start")) || (main.equalsIgnoreCase("s"))) {
 			if (player.hasPermission("auction.start")){
 			auctionStart(player, args);
+			ChatManager.addListener(player);
 			}else{
 				player.sendMessage(Messaging.get("error.perm"));
 			}
@@ -76,11 +77,13 @@ public class AuctionCommand implements CommandExecutor {
 		if (this.plugin.getAuction(id) != null) {
 
 			if ((main.equalsIgnoreCase("end")) || (main.equalsIgnoreCase("e"))) {
+				ChatManager.addListener(player);
 				auc.end(player, args);
 				return true;
 			}
 			if ((main.equalsIgnoreCase("cancel"))
 					|| (main.equalsIgnoreCase("c"))) {
+				ChatManager.addListener(player);
 				auc.cancel(player, args);
 				return true;
 			}
@@ -90,6 +93,7 @@ public class AuctionCommand implements CommandExecutor {
 			}
 			if ((main.equalsIgnoreCase("bid")) || (main.equalsIgnoreCase("b"))) {
 				if (player.hasPermission("auction.bid")){
+					ChatManager.addListener(player);
 				auc.bid(player, args);
 				}else{
 					player.sendMessage(Messaging.get("error.perm"));
