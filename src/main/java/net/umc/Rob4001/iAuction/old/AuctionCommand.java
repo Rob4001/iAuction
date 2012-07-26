@@ -1,10 +1,9 @@
-package net.umc.Rob4001.iAuction;
+package net.umc.Rob4001.iAuction.old;
 
 import java.text.DecimalFormat;
 
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
-import net.umc.dev.InventoryManager;
 
 
 import org.bukkit.GameMode;

@@ -1,10 +1,9 @@
-package net.umc.Rob4001.iAuction;
+package net.umc.Rob4001.iAuction.old;
 
 import java.util.Map.Entry;
 
 import net.milkbowl.vault.item.ItemInfo;
 import net.milkbowl.vault.item.Items;
-import net.umc.dev.InventoryManager;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;

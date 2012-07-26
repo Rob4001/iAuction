@@ -1,4 +1,4 @@
-package net.umc.dev;
+package net.umc.Rob4001.iAuction.old;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -138,6 +138,7 @@ public class InventoryManager {
 
 				if (stack.getType() == Material.POTION
 						&& isSplash(stack.getDurability())) {
+					
 					short dmg = stack.getDurability();
 					_inv.getItem(i).setDurability(dmg |= 0x4000);
 				}
