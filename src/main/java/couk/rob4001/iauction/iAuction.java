@@ -246,7 +246,7 @@ public class iAuction extends JavaPlugin {
 		langconfig.addDefault("timer.timeleft", "&b{0} &9seconds left to bid!");
 		langconfig.addDefault("info.item",
 				"&9Auctioned Item: &b{0} &9[&b{1}&9]");
-		langconfig.addDefault("item.enchantments", " &9with {0}");
+		langconfig.addDefault("info.enchantments", " &9with {0}");
 		langconfig.addDefault("info.amount", "&9Amount: &b{0}");
 		langconfig.addDefault("info.bid", "&9Current Bid: &b{0}");
 		langconfig.addDefault("info.auctioneer", "&9Owner: &b{0}");
