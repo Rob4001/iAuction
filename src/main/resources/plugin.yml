@@ -1,6 +1,6 @@
 name: iAuction
 main: couk.rob4001.iauction.iAuction
-version: 4.3.1
+version: 4.3.2
 author: Rob4001
 description: Auctions for iConomy plugin for Bukkit Original by Zazara107
 depend: [Vault]

@@ -199,6 +199,9 @@ public class AuctionCommand implements CommandExecutor {
 			player.sendMessage(Messaging.get("start.noitems"));
 			return;
 		}
+		if (! plugin.getConfig().getBoolean("eco.usedecimal")){
+			price = Math.round(price);
+		}
 
 		Auction auc = new Auction(plugin,is, price, player, time);
 		if (!this.plugin.registerAuction(auc)) {

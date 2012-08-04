@@ -225,6 +225,11 @@ public class Auction implements Runnable {
 			}
 
 		}
+		
+		if (! plugin.getConfig().getBoolean("eco.usedecimal")){
+			tempbid = Math.round(tempbid);
+			tempsbid = Math.round(tempsbid);
+		}
 
 		// if (fin) {
 		// bidder.sendMessage(plugin.errorcolour + "The auction has ended");
@@ -250,13 +255,16 @@ public class Auction implements Runnable {
 			return;
 		}
 
-		if (tempsbid <= tempbid || tempsbid <= sbid) {
-			bidder.sendMessage(Messaging.get("bidding.sbidtoolow"));
-			tempsbid = -1;
-		}
+		if (tempsbid != -1){
 		if (!plugin.getConfig().getBoolean("bid.sbidenable")) {
 			bidder.sendMessage(Messaging.get("bidding.sbidnotenabled"));
 			tempsbid = -1;
+		}else{
+			if (tempsbid <= tempbid || tempsbid <= sbid) {
+				bidder.sendMessage(Messaging.get("bidding.sbidtoolow"));
+				tempsbid = -1;
+			}
+		}
 		}
 
 		if (tempbid < bid + plugin.getConfig().getDouble("bid.minincrement")) {

@@ -70,7 +70,7 @@ public class iAuction extends JavaPlugin {
 		this.getConfig().addDefault("antisnipe.value",5);
 		this.getConfig().addDefault("start.defaulttime", 60);
 		this.getConfig().addDefault("start.defaultprice", 10);
-		this.getConfig().addDefault("eco.useDecimal", true);
+		this.getConfig().addDefault("eco.usedecimal", true);
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
 	}
@@ -250,7 +250,7 @@ public class iAuction extends JavaPlugin {
 		langconfig.addDefault("info.amount", "&9Amount: &b{0}");
 		langconfig.addDefault("info.bid", "&9Current Bid: &b{0}");
 		langconfig.addDefault("info.auctioneer", "&9Owner: &b{0}");
-		langconfig.addDefault("info.winner", "&9Current Winnder: &b{0}");
+		langconfig.addDefault("info.winner", "&9Current Winner: &b{0}");
 		langconfig.addDefault("list.noauctions",
 				"There are no auctions running atm");
 		langconfig.addDefault("list.title", "ID  Item           Amount    Bid");
