@@ -47,7 +47,7 @@ public class iAuction extends JavaPlugin {
 		this.getCommand("auction").setExecutor(new AuctionCommand(this));
 
 		try {
-			Metrics metrics = new Metrics(this);
+			MetricsLite metrics = new MetricsLite(this);
 			metrics.start();
 		} catch (IOException e) {
 			// Failed to submit the stats :-(

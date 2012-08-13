@@ -38,12 +38,13 @@ public class AuctionCommand implements CommandExecutor {
 			return true;
 		}
 		String main = args.getFirst();
+		//TODO: Find current AuctionScope/Auction
 		int id = 1;
 
-		if (main.equalsIgnoreCase("list") || main.equalsIgnoreCase("l")) {
-			list(player);
-			return true;
-		}
+//		if (main.equalsIgnoreCase("list") || main.equalsIgnoreCase("l")) {
+//			list(player);
+//			return true;
+//		}
 		if (main.equalsIgnoreCase("help") || main.equalsIgnoreCase("h")) {
 			help(player);
 			return true;
@@ -107,25 +108,25 @@ public class AuctionCommand implements CommandExecutor {
 		return true;
 
 	}
-
-	private void list(Player player) {
-		
-		List<Auction> auctions= plugin.getAuctions();
-		if (auctions.isEmpty()){
-			player.sendMessage(Messaging.get("list.noauctions"));
-			return;
-		}
-		player.sendMessage(Messaging.get("list.title"));
-		for (Auction a : auctions){
-			ItemInfo ii = Items.itemByStack(a.getLot());
-			player.sendMessage(Messaging.get("list.entry",a.getID().toString(), String.valueOf(ii
-					.getName()), String.valueOf(ii.getId()), String.valueOf(ii
-							.getSubTypeId()),String.valueOf(a.getLot()
-					.getAmount()),String.valueOf(a.getBid())));
-		}
-
-		
-	}
+//TODO:Decide if this is needed
+//	private void list(Player player) {
+//		
+//		List<Auction> auctions= plugin.getAuctions();
+//		if (auctions.isEmpty()){
+//			player.sendMessage(Messaging.get("list.noauctions"));
+//			return;
+//		}
+//		player.sendMessage(Messaging.get("list.title"));
+//		for (Auction a : auctions){
+//			ItemInfo ii = Items.itemByStack(a.getLot());
+//			player.sendMessage(Messaging.get("list.entry",a.getID().toString(), String.valueOf(ii
+//					.getName()), String.valueOf(ii.getId()), String.valueOf(ii
+//							.getSubTypeId()),String.valueOf(a.getLot()
+//					.getAmount()),String.valueOf(a.getBid())));
+//		}
+//
+//		
+//	}
 
 	private void help(Player player) {
 		Messaging.playerMessage(player, "help.title");
@@ -147,30 +148,43 @@ public class AuctionCommand implements CommandExecutor {
 		ItemStack is;
 		int amount = -1;
 		int time = plugin.getConfig().getInt("start.defaulttime");
-		double price = plugin.getConfig().getDouble("start.defaultprice");
+		long price = plugin.getConfig().getLong("start.defaultprice");
+		int n =0;
 
 		for (int i = 0; i < args.size(); i++) {
 			String arg = args.get(i);
 			if (arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("hand")) {
 				hand = true;
+				continue;
 			}
 			if (arg.equalsIgnoreCase("-i") || arg.equalsIgnoreCase("item")) {
 				hand = false;
 				iq = args.get(i + 1);
 				i += 1;
+				continue;
 			}
 			if (arg.equalsIgnoreCase("-a") || arg.equalsIgnoreCase("amount")) {
 				amount = Integer.parseInt(args.get(i + 1));
 				i += 1;
+				continue;
 			}
 			if (arg.equalsIgnoreCase("-t") || arg.equalsIgnoreCase("time")) {
 				time = Integer.parseInt(args.get(i + 1));
 				i += 1;
+				continue;
 			}
 			if (arg.equalsIgnoreCase("-p") || arg.equalsIgnoreCase("price")) {
-				price = Double.parseDouble(args.get(i + 1));
+				price = Long.parseLong(args.get(i + 1));
 				i += 1;
+				continue;
 			}
+			switch(n){
+			case 0: time = Integer.parseInt(arg);
+			case 1: if(arg.equalsIgnoreCase("hand")){hand =true;}else{iq = arg;}
+			case 2: amount = Integer.parseInt(arg);
+			case 3: price = Long.parseLong(arg);
+			}
+			
 		}
 
 		if (hand) {
