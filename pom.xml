@@ -32,6 +32,13 @@
 			<systemPath>${basedir}/lib/HeroChat.jar</systemPath>
 		</dependency>
 		<dependency>
+			<groupId>com.flobi.whatisit</groupId>
+			<artifactId>whatisit</artifactId>
+			<version>1.1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/WhatIsIt.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>com.feildmaster</groupId>
 			<artifactId>channelchat</artifactId>
 			<version>0.6.2</version>
