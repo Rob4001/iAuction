@@ -53,11 +53,11 @@ public class AuctionBid {
 		
 		// Extract taxes:
 		Double taxes = 0D;
-		if (iAuction.taxPercentage > 0D) {
-			taxes = unsafeBidAmount * (iAuction.taxPercentage / 100D);
-			iAuction.sendMessage("auction-end-tax", auction.getOwner(), auction);
+		if (iAuction.config.getDouble("auction-end-tax-percent") > 0D) {
+			taxes = unsafeBidAmount * (iAuction.config.getDouble("auction-end-tax-percent") / 100D);
+			Messaging.sendMessage("auction-end-tax", auction.getOwner(), auction);
 			unsafeBidAmount -= taxes;
-			if (!iAuction.taxDestinationUser.isEmpty()) iAuction.econ.depositPlayer(iAuction.taxDestinationUser, taxes);
+			if (!iAuction.config.getString("deposit-tax-to-user").isEmpty()) iAuction.econ.depositPlayer(iAuction.config.getString("deposit-tax-to-user"), taxes);
 		}
 		
 		// Apply winnings to auction owner.
@@ -150,7 +150,7 @@ public class AuctionBid {
 		return true;
 	}
 	private Boolean parseArgMaxBid() {
-		if (!iAuction.allowMaxBids) {
+		if (!iAuction.config.getBoolean("allow-max-bids")) {
 			// Just ignore it.
 			maxBidAmount = bidAmount;
 			return true;

@@ -9,6 +9,7 @@ import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import couk.rob4001.utility.functions;
 import couk.rob4001.utility.items;
 
 public class AuctionLot implements java.io.Serializable {
@@ -63,7 +64,7 @@ public class AuctionLot implements java.io.Serializable {
 			// Give whatever items space permits at this time.
 			ItemStack typeStack = getTypeStack();
 			if (amountToGive > 0) {
-				iAuction.sendMessage("lot-give", player, null);
+				Messaging.sendMessage("lot-give", player, null);
 			}
 			while (amountToGive > 0) {
 				ItemStack givingItems = lotTypeLock.clone();
@@ -81,7 +82,7 @@ public class AuctionLot implements java.io.Serializable {
 				
 				// Drop lot.
 				player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
-				iAuction.sendMessage("lot-drop", player, null);
+				Messaging.sendMessage("lot-drop", player, null);
 			}
 		} else {
 			// Player is offline, queue lot for give on login.
@@ -94,7 +95,7 @@ public class AuctionLot implements java.io.Serializable {
 			
 			// Queue for distribution on space availability.
 			iAuction.orphanLots.add(orphanLot);
-			iAuction.saveObject(iAuction.orphanLots, "orphanLots.ser");
+			functions.saveObject(iAuction.orphanLots, "orphanLots.ser");
 		}
 	}
 	public ItemStack getTypeStack() {

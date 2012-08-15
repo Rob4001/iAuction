@@ -50,37 +50,37 @@ public class Auction {
 		ItemStack typeStack = lot.getTypeStack();
 		
 		// Check banned items:
-		for (int i = 0; i < iAuction.bannedItems.size(); i++) {
-			if (items.isSameItem(typeStack, iAuction.bannedItems.get(i))) {
-				iAuction.sendMessage("auction-fail-banned", ownerName, this);
+		for (int i = 0; i < iAuction.config.getStringList("banned-items").size(); i++) {
+			if (items.isSameItem(typeStack, iAuction.config.getStringList("banned-items").get(i))) {
+				Messaging.sendMessage("auction-fail-banned", ownerName, this);
 				return false;
 			}
 		}
 		
-		if (iAuction.taxPerAuction > 0D) {
-			if (!iAuction.econ.has(ownerName, iAuction.taxPerAuction)) {
-				iAuction.sendMessage("auction-fail-start-tax", ownerName, this);
+		if (iAuction.config.getDouble("auction-start-tax") > 0D) {
+			if (!iAuction.econ.has(ownerName, iAuction.config.getDouble("auction-start-tax"))) {
+				Messaging.sendMessage("auction-fail-start-tax", ownerName, this);
 				return false;
 			}
 		}
 		
 		if (!lot.AddItems(quantity, true)) {
-			iAuction.sendMessage("auction-fail-insufficient-supply", ownerName, this);
+			Messaging.sendMessage("auction-fail-insufficient-supply", ownerName, this);
 			return false;
 		}
 
-		if (iAuction.taxPerAuction > 0D) {
-			if (iAuction.econ.has(ownerName, iAuction.taxPerAuction)) {
-				iAuction.sendMessage("auction-start-tax", getOwner(), this);
-				iAuction.econ.withdrawPlayer(ownerName, iAuction.taxPerAuction);
-				if (!iAuction.taxDestinationUser.isEmpty()) iAuction.econ.depositPlayer(iAuction.taxDestinationUser, iAuction.taxPerAuction);
+		if (iAuction.config.getDouble("auction-start-tax") > 0D) {
+			if (iAuction.econ.has(ownerName, iAuction.config.getDouble("auction-start-tax"))) {
+				Messaging.sendMessage("auction-start-tax", getOwner(), this);
+				iAuction.econ.withdrawPlayer(ownerName, iAuction.config.getDouble("auction-start-tax"));
+				if (!iAuction.config.getString("deposit-tax-to-user").isEmpty()) iAuction.econ.depositPlayer(iAuction.config.getString("deposit-tax-to-user"), iAuction.config.getDouble("auction-start-tax"));
 			}
 		}
 
 		active = true;
 		iAuction.currentAuctionOwnerLocation = iAuction.server.getPlayer(ownerName).getLocation().clone();
 		iAuction.currentAuctionOwnerGamemode = iAuction.server.getPlayer(ownerName).getGameMode();
-		iAuction.sendMessage("auction-start", (CommandSender) null, this);
+		Messaging.sendMessage("auction-start", (CommandSender) null, this);
 		
 		// Set timer:
 		final Auction thisAuction = this;
@@ -94,12 +94,12 @@ public class Auction {
 		    		return;
 		    	}
 		    	if (thisAuction.countdown < 4) {
-			    	iAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
+			    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
 			    	return;
 		    	}
 		    	if (thisAuction.time >= 20) {
 		    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
-				    	iAuction.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
+				    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
 		    		}
 		    	}
 		    }
@@ -113,36 +113,36 @@ public class Auction {
 		short maxDurability = itemType.getType().getMaxDurability();
 		short currentDurability = itemType.getDurability();
 		if (!active) {
-			iAuction.sendMessage("auction-info-no-auction", sender, this);
+			Messaging.sendMessage("auction-info-no-auction", sender, this);
 		} else if (currentBid == null) {
-			iAuction.sendMessage("auction-info-header-nobids", sender, this);
-			iAuction.sendMessage("auction-info-enchantment", sender, this);
+			Messaging.sendMessage("auction-info-header-nobids", sender, this);
+			Messaging.sendMessage("auction-info-enchantment", sender, this);
 			if (maxDurability > 0 && currentDurability > 0) {
-				iAuction.sendMessage("auction-info-damage", sender, this);
+				Messaging.sendMessage("auction-info-damage", sender, this);
 			}
-			iAuction.sendMessage("auction-info-footer-nobids", sender, this);
+			Messaging.sendMessage("auction-info-footer-nobids", sender, this);
 		} else {
-			iAuction.sendMessage("auction-info-header", sender, this);
-			iAuction.sendMessage("auction-info-enchantment", sender, this);
+			Messaging.sendMessage("auction-info-header", sender, this);
+			Messaging.sendMessage("auction-info-enchantment", sender, this);
 			if (maxDurability > 0 && currentDurability > 0) {
-				iAuction.sendMessage("auction-info-damage", sender, this);
+				Messaging.sendMessage("auction-info-damage", sender, this);
 			}
-			iAuction.sendMessage("auction-info-footer", sender, this);
+			Messaging.sendMessage("auction-info-footer", sender, this);
 		}
 	}
 	public void cancel(Player canceller) {
-		iAuction.sendMessage("auction-cancel", (CommandSender) null, this);
+		Messaging.sendMessage("auction-cancel", (CommandSender) null, this);
 		if (lot != null) lot.cancelLot();
 		if (currentBid != null) currentBid.cancelBid();
 		dispose();
 	}
 	public void end(Player ender) {
 		if (currentBid == null || lot == null) {
-			iAuction.sendMessage("auction-end-nobids", (CommandSender) null, this);
+			Messaging.sendMessage("auction-end-nobids", (CommandSender) null, this);
 			if (lot != null) lot.cancelLot();
 			if (currentBid != null) currentBid.cancelBid();
 		} else {
-			iAuction.sendMessage("auction-end", (CommandSender) null, this);
+			Messaging.sendMessage("auction-end", (CommandSender) null, this);
 			lot.winLot(currentBid.getBidder());
 			currentBid.winBid();
 		}
@@ -168,7 +168,7 @@ public class Auction {
 			failBid(bid, bid.getError());
 			return;
 		}
-		if (ownerName.equals(bidder.getName()) && !iAuction.allowBidOnOwn) {
+		if (ownerName.equals(bidder.getName()) && !iAuction.config.getBoolean("allow-bid-on-own-auction")) {
 			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
@@ -197,7 +197,7 @@ public class Auction {
 		AuctionBid winner = null;
 		AuctionBid looser = null;
 		
-		if (iAuction.useOldBidLogic) {
+		if (iAuction.config.getBoolean("use-old-bid-logic")) {
 			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
 				winner = bid;
 				looser = currentBid;
@@ -237,16 +237,16 @@ public class Auction {
 			} else {
 				// Did the old bid have to raise the bid to stay winner?
 				if (previousBidAmount < winner.getBidAmount()) {
-					iAuction.sendMessage("bid-auto-outbid", (CommandSender) null, this);
+					Messaging.sendMessage("bid-auto-outbid", (CommandSender) null, this);
 					failBid(bid, "bid-fail-auto-outbid");
 				} else {
-					iAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
+					Messaging.sendMessage("bid-fail-too-low", bid.getBidder(), this);
 					failBid(bid, null);
 				}
 			}
 		} else {
 			// Seriously don't know what could cause this, but might as well take care of it.
-			iAuction.sendMessage("bid-fail-too-low", bid.getBidder(), this);
+			Messaging.sendMessage("bid-fail-too-low", bid.getBidder(), this);
 		}
 		
 		
@@ -254,7 +254,7 @@ public class Auction {
 	}
 	private void failBid(AuctionBid newBid, String reason) {
 		newBid.cancelBid();
-		iAuction.sendMessage(reason, newBid.getBidder(), this);
+		Messaging.sendMessage(reason, newBid.getBidder(), this);
 	}
 	private void setNewBid(AuctionBid newBid, String reason) {
 		if (currentBid != null) {
@@ -263,7 +263,7 @@ public class Auction {
 		currentBid = newBid;
 		iAuction.currentBidPlayerLocation = iAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
 		iAuction.currentBidPlayerGamemode = iAuction.server.getPlayer(newBid.getBidder()).getGameMode();
-		iAuction.sendMessage(reason, (CommandSender) null, this);
+		Messaging.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {
 		Player owner = iAuction.server.getPlayer(ownerName);
@@ -272,7 +272,7 @@ public class Auction {
 		}
 		ItemStack heldItem = owner.getItemInHand();
 		if (heldItem == null || heldItem.getAmount() == 0) {
-			iAuction.sendMessage("auction-fail-hand-is-empty", owner, this);
+			Messaging.sendMessage("auction-fail-hand-is-empty", owner, this);
 			return false;
 		}
 		lot = new AuctionLot(heldItem, ownerName);
@@ -280,11 +280,11 @@ public class Auction {
 		ItemStack itemType = lot.getTypeStack();
 		
 		if (
-				!iAuction.allowDamagedItems &&
+				!iAuction.config.getBoolean("allow-damaged-items") &&
 				itemType.getType().getMaxDurability() > 0 &&
 				itemType.getDurability() > 0
 		) {
-			iAuction.sendMessage("auction-fail-damaged-item", owner, this);
+			Messaging.sendMessage("auction-fail-damaged-item", owner, this);
 			lot = null;
 			return false;
 		}
@@ -301,50 +301,50 @@ public class Auction {
 	}
 	private Boolean isValidOwner() {
 		if (ownerName == null) {
-			iAuction.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), this);
+			Messaging.sendMessage("auction-fail-invalid-owner", (Player) plugin.getServer().getConsoleSender(), this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidAmount() {
 		if (quantity <= 0) {
-			iAuction.sendMessage("auction-fail-quantity-too-low", ownerName, this);
+			Messaging.sendMessage("auction-fail-quantity-too-low", ownerName, this);
 			return false;
 		}
 		if (!items.hasAmount(ownerName, quantity, lot.getTypeStack())) {
-			iAuction.sendMessage("auction-fail-insufficient-supply2", ownerName, this);
+			Messaging.sendMessage("auction-fail-insufficient-supply2", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidStartingBid() {
 		if (startingBid < 0) {
-			iAuction.sendMessage("auction-fail-starting-bid-too-low", ownerName, this);
+			Messaging.sendMessage("auction-fail-starting-bid-too-low", ownerName, this);
 			return false;
-		} else if (startingBid > iAuction.maxStartingBid) {
-			iAuction.sendMessage("auction-fail-starting-bid-too-high", ownerName, this);
+		} else if (startingBid > 0 && startingBid > functions.getSafeMoney(iAuction.config.getDouble("max-starting-bid")) ) {
+			Messaging.sendMessage("auction-fail-starting-bid-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidIncrement() {
-		if (getMinBidIncrement() < iAuction.minIncrement) {
-			iAuction.sendMessage("auction-fail-increment-too-low", ownerName, this);
+		if (getMinBidIncrement() < functions.getSafeMoney(iAuction.config.getDouble("min-bid-increment"))) {
+			Messaging.sendMessage("auction-fail-increment-too-low", ownerName, this);
 			return false;
 		}
-		if (getMinBidIncrement() > iAuction.maxIncrement) {
-			iAuction.sendMessage("auction-fail-increment-too-high", ownerName, this);
+		if (getMinBidIncrement() > functions.getSafeMoney(iAuction.config.getDouble("max-bid-increment"))) {
+			Messaging.sendMessage("auction-fail-increment-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidTime() {
-		if (time < iAuction.minTime) {
-			iAuction.sendMessage("auction-fail-time-too-low", ownerName, this);
+		if (time < iAuction.config.getInt("min-auction-time")) {
+			Messaging.sendMessage("auction-fail-time-too-low", ownerName, this);
 			return false;
 		}
-		if (time > iAuction.maxTime) {
-			iAuction.sendMessage("auction-fail-time-too-high", ownerName, this);
+		if (time > iAuction.config.getInt("max-auction-time")) {
+			Messaging.sendMessage("auction-fail-time-too-high", ownerName, this);
 			return false;
 		}
 		return true;
@@ -361,14 +361,14 @@ public class Auction {
 			} else if (args[0].matches("[0-9]{1,7}")) {
 				quantity = Integer.parseInt(args[0]);
 			} else {
-				iAuction.sendMessage("parse-error-invalid-quantity", ownerName, this);
+				Messaging.sendMessage("parse-error-invalid-quantity", ownerName, this);
 				return false;
 			}
 		} else {
 			quantity = lotType.getAmount();
 		}
 		if (quantity < 0) {
-			iAuction.sendMessage("parse-error-invalid-quantity", ownerName, this);
+			Messaging.sendMessage("parse-error-invalid-quantity", ownerName, this);
 			return false;
 		}
 		return true;
@@ -380,14 +380,14 @@ public class Auction {
 			if (args[1].matches(iAuction.decimalRegex)) {
 				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
 			} else {
-				iAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
+				Messaging.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 				return false;
 			}
 		} else {
-			startingBid = iAuction.defaultStartingBid;
+			startingBid = functions.getSafeMoney(iAuction.config.getDouble("default-starting-bid"));
 		}
 		if (startingBid < 0) {
-			iAuction.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
+			Messaging.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 			return false;
 		}
 		return true;
@@ -399,14 +399,14 @@ public class Auction {
 			if (args[2].matches(iAuction.decimalRegex)) {
 				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
 			} else {
-				iAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
+				Messaging.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 				return false;
 			}
 		} else {
-			minBidIncrement = iAuction.defaultBidIncrement;
+			minBidIncrement = functions.getSafeMoney(iAuction.config.getDouble("default-bid-increment"));
 		}
 		if (minBidIncrement < 0) {
-			iAuction.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
+			Messaging.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 			return false;
 		}
 		return true;
@@ -418,14 +418,14 @@ public class Auction {
 			if (args[3].matches("[0-9]{1,7}")) {
 				time = Integer.parseInt(args[3]);
 			} else {
-				iAuction.sendMessage("parse-error-invalid-time", ownerName, this);
+				Messaging.sendMessage("parse-error-invalid-time", ownerName, this);
 				return false;
 			}
 		} else {
-			time = iAuction.defaultAuctionTime;
+			time = iAuction.config.getInt("default-auction-time");
 		}
 		if (time < 0) {
-			iAuction.sendMessage("parse-error-invalid-time", ownerName, this);
+			Messaging.sendMessage("parse-error-invalid-time", ownerName, this);
 			return false;
 		}
 		return true;
