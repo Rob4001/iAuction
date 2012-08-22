@@ -7,32 +7,22 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import couk.rob4001.utility.functions;
 
-public class iAuction extends JavaPlugin {
+public class iAuction extends JavaPlugin{
 	private static final Logger log = Logger.getLogger("Minecraft");
-	public Auction publicAuction;
+//	public Auction publicAuction;
 
 	// Got to figure out a better way to store these:
 //	public static long defaultStartingBid = 0;
@@ -51,10 +41,6 @@ public class iAuction extends JavaPlugin {
 //	public static boolean allowEarlyEnd = false;
 	public static int decimalPlaces = 2;
 	public static String decimalRegex = "^[0-9]{0,13}(\\.[0-9]{1," + decimalPlaces + "})?$";
-//	public static boolean allowCreativeMode = false;
-//	public static boolean allowDamagedItems = false;
-//	private static File auctionLog = null;
-	private static long lastAuctionDestroyTime = 0;
 //	public static boolean allowMaxBids = true;
 //	public static boolean allowGamemodeChange = false;
 //	public static boolean allowWorldChange = false;
@@ -62,10 +48,10 @@ public class iAuction extends JavaPlugin {
 //	public static double taxPerAuction = 0;
 //	public static double taxPercentage = 0;
 //	public static String taxDestinationUser = "";
-	public static Location currentBidPlayerLocation;
-	public static GameMode currentBidPlayerGamemode;
-	public static Location currentAuctionOwnerLocation;
-	public static GameMode currentAuctionOwnerGamemode;
+//	public static Location currentBidPlayerLocation;
+//	public static GameMode currentBidPlayerGamemode;
+//	public static Location currentAuctionOwnerLocation;
+//	public static GameMode currentAuctionOwnerGamemode;
 //	public static int cancelPreventionSeconds = 15;
 //	public static double cancelPreventionPercent = 50;
 	
@@ -82,7 +68,7 @@ public class iAuction extends JavaPlugin {
 //	private static ConsoleCommandSender console;
 	public static Server server;
 	public static int queueTimer;
-	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>(); 
+	
 	
 	// TODO: Save these items when updated so we don't loose info when restarting.
 	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
@@ -124,88 +110,34 @@ public class iAuction extends JavaPlugin {
 
 	// Vault objects
 	public static Economy econ = null;
-    public static Permission perms = null;
-    public static Chat chat = null;
+    public Permission perms = null;
 
 	public void onEnable() {
 		server = getServer();
 //		console = server.getConsoleSender();
 		dataFolder = getDataFolder();
-		final Plugin plugin = this;
+//		final Plugin plugin = this;
 
 		setupEconomy();
         setupPermissions();
-        setupChat();
-
+        loadConfig();
+        loadScopes();
+        
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, Messaging.chatPrepClean(textConfig.getString("no-whatisit")));
 			server.getPluginManager().disablePlugin(this);
             return;
 		}
-        loadConfig();
+        
+
 		if (econ == null) {
 			log.log(Level.SEVERE, Messaging.chatPrepClean(textConfig.getString("no-economy")));
 			server.getPluginManager().disablePlugin(this);
             return;
 		}
-        
-        server.getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void playerJoin(PlayerJoinEvent event) {
-        	    iAuction.killOrphan(event.getPlayer());
-            }
-            @EventHandler
-            public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
-            	if (getConfig().getBoolean("allow-world-change") || publicAuction == null) return;
-            	
-                // Get player objects
-                final Player player = event.getPlayer();
-                if (publicAuction.getOwner().equalsIgnoreCase(player.getName()) && !player.getLocation().getWorld().equals(currentAuctionOwnerLocation.getWorld())) {
-                	// This is running as a timer because MultiInv is using HIGHEST priority and 
-                	// there's no way to send a cancel to it, so we have to go after the fact and
-                	// remove the user.
-                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-                		public void run() {
-    	                	player.teleport(currentAuctionOwnerLocation, TeleportCause.PLUGIN);
-                		}
-                	}, 1L);
-                	Messaging.sendMessage("worldchange-fail-auction-owner", player, publicAuction);
-                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())
-                		 && !player.getLocation().getWorld().equals(currentBidPlayerLocation.getWorld())
-                		) {
-                	// This is running as a timer because MultiInv is using HIGHEST priority and 
-                	// there's no way to send a cancel to it, so we have to go after the fact and
-                	// remove the user.
-                	getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-                		public void run() {
-                        	player.teleport(currentBidPlayerLocation, TeleportCause.PLUGIN);
-                		}
-                	}, 1L);
-                	Messaging.sendMessage("worldchange-fail-auction-bidder", player, publicAuction);
-                }
-            }
-            @EventHandler
-            public void onPlayerChangedWorld(PlayerGameModeChangeEvent event){
-            	if (getConfig().getBoolean("allow-gamemode-change") || publicAuction == null) return;
-            	
-                // Get player objects
-                Player player = event.getPlayer();
-                
-                if (publicAuction.getOwner().equalsIgnoreCase(player.getName())) {
-                	event.setCancelled(true);
-                	Messaging.sendMessage("gamemodechange-fail-auction-owner", player, publicAuction);
-                } else if (publicAuction.getCurrentBid() != null && publicAuction.getCurrentBid().getBidder().equalsIgnoreCase(player.getName())) {
-                	event.setCancelled(true);
-                	Messaging.sendMessage("gamemodechange-fail-auction-bidder", player, publicAuction);
-                }
-            }
-        }, this);
+
 		
-		queueTimer = getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-		    public void run() {
-		    	checkAuctionQueue();
-		    }
-		}, 20L, 20L);
+		
 		
 		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser");
 		voluntarilyDisabledUsers = functions.loadArrayListString("voluntarilyDisabledUsers.ser");
@@ -220,9 +152,10 @@ public class iAuction extends JavaPlugin {
         }
 		Messaging.sendMessage("plugin-enabled", getServer().getConsoleSender(), null);
 		
-		//TODO: Load orphan lots from save file.
+
 	}
-    /**
+
+	/**
 	 * Loads config.yml and language.yml configuration files.
 	 */
     private void loadConfig() {
@@ -301,75 +234,7 @@ public class iAuction extends JavaPlugin {
 		
 		//TODO: Save orphan lots from save file.
 	}
-	public void detachAuction(Auction auction) {
-		publicAuction = null;
-		lastAuctionDestroyTime = System.currentTimeMillis();
-		checkAuctionQueue();
-	}
 	
-    
-    public void queueAuction(Auction auctionToQueue, Player player, Auction currentAuction) {
-		String playerName = player.getName();
-
-		if (currentAuction == null) {
-			// Queuing because of interval not yet timed out.
-			// Allow a queue of 1 to override if 0 for this condition.
-	    	if (Math.max(getConfig().getInt("max-auction-queue-length"), 1) <= auctionQueue.size()) {
-				Messaging.sendMessage("auction-queue-fail-full", player, currentAuction);
-				return;
-			}
-		} else {
-	    	if (getConfig().getInt("max-auction-queue-length") <= 0) {
-				Messaging.sendMessage("auction-fail-auction-exists", player, currentAuction);
-				return;
-			}
-			if (currentAuction.getOwner().equalsIgnoreCase(playerName)) {
-				Messaging.sendMessage("auction-queue-fail-current-auction", player, currentAuction);
-				return;
-			}
-			if (getConfig().getInt("max-auction-queue-length") <= auctionQueue.size()) {
-				Messaging.sendMessage("auction-queue-fail-full", player, currentAuction);
-				return;
-			}
-		}
-		for(int i = 0; i < auctionQueue.size(); i++) {
-			if (auctionQueue.get(i) != null) {
-				Auction queuedAuction = auctionQueue.get(i);
-				if (queuedAuction.getOwner().equalsIgnoreCase(playerName)) {
-					Messaging.sendMessage("auction-queue-fail-in-queue", player, currentAuction);
-					return;
-				}
-			}
-		}
-		if (auctionToQueue.isValid()) {
-			auctionQueue.add(auctionToQueue);
-			checkAuctionQueue();
-			if (auctionQueue.contains(auctionToQueue)) {
-				Messaging.sendMessage("auction-queue-enter", player, currentAuction);
-			}
-		}
-    }
-	private void checkAuctionQueue() {
-		if (publicAuction != null) {
-			return;
-		}
-		if (System.currentTimeMillis() - lastAuctionDestroyTime < getConfig().getInt("min-auction-interval-secs") * 1000) {
-			return;
-		}
-		if (auctionQueue.size() == 0) {
-			return;
-		}
-		Auction auction = auctionQueue.remove(0);
-		if (auction == null) {
-			return;
-		}
-		if (!auction.isValid()) {
-			return;
-		}
-		if (auction.start()) {
-			publicAuction = auction;
-		}
-	}
     
   
     
@@ -400,15 +265,6 @@ public class iAuction extends JavaPlugin {
         return econ != null;
     }
 
-    private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = server.getServicesManager().getRegistration(Chat.class);
-        if (rsp == null) {
-            return false;
-        }
-        chat = rsp.getProvider();
-        return chat != null;
-    }
-
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = server.getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
@@ -417,11 +273,29 @@ public class iAuction extends JavaPlugin {
     
     //Scope handling
 	public AuctionScope getScope(CommandSender sender) {
-		// TODO Auto-generated method stub
-		return null;
+		// 			// TODO: Figure out auction for context.
+		// In the mean time, use public auction.
+		return auctionScopes.get(0);
 	}
 	public ArrayList<AuctionScope> getAuctionScopes() {
 		return auctionScopes;
 	}
+	
+    private void loadScopes() {
+		// TODO Actually Get stuff from config currently just using global
+    	
+    	
+    	AuctionScope scope = new AuctionScope(this,getConfig());
+		auctionScopes.add(scope);
+		getServer().getPluginManager().registerEvents(scope, this);
+	}
+	
+	
+	
+	
+	
+	
+	
+
 }
 

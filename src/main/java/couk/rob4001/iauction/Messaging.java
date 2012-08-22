@@ -111,7 +111,7 @@ public class Messaging {
 					currentMaxBid = startingBid;
 					endAuctionTax = "-";
 				}
-				auctionScope = auction.getScope();
+				auctionScope = auction.getScope().getName();
 	        	durabilityRemaining = "-";
 				if (typeLot != null) {
 					if (typeLot.getType().getMaxDurability() > 0) {

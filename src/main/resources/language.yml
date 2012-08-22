@@ -1,4 +1,4 @@
-chat-prefix: '&f[&7flo&9Auction&f] &9'
+chat-prefix: '&f[&7i&9Auction&f] &9'
 plugin-enabled: '&fhas been enabled.'
 plugin-disabled: '&fhas been disabled.'
 no-whatisit: Disabled due to no WhatIsIt dependency found!

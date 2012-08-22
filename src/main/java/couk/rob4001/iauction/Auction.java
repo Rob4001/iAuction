@@ -1,5 +1,8 @@
 package couk.rob4001.iauction;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -7,11 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import couk.rob4001.utility.functions;
 import couk.rob4001.utility.items;
 
-public class Auction {
+public class Auction implements Runnable {
 	protected iAuction plugin;
-	private String[] args;
+	LinkedList<String> args;
 	private String ownerName;
-	private String scope;
+	private AuctionScope scope;
 
 	private long startingBid = 0;
 	private long minBidIncrement = 0;
@@ -26,21 +29,21 @@ public class Auction {
 	private int countdown = 0;
 	private int countdownTimer = 0;
 	
-	public String getScope() {
+	public AuctionScope getScope() {
 		return scope;
 	}
 	
-	public Auction(iAuction plugin, Player auctionOwner, String[] inputArgs, String scope) {
+	public Auction(iAuction plugin, Player auctionOwner, String[] inputArgs, AuctionScope scope) {
+
 		ownerName = auctionOwner.getName();
-		args = inputArgs;
+		args = new LinkedList<String>(Arrays.asList(inputArgs));;
 		this.plugin = plugin; 
 		this.scope = scope;
 
 		// Remove the optional "start" arg:
-		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("start") || args[0].equalsIgnoreCase("s")) {
-				args = new String[inputArgs.length - 1];
-				System.arraycopy(inputArgs, 1, args, 0, inputArgs.length - 1);
+		if (!args.isEmpty()) {
+			if (args.getFirst().equalsIgnoreCase("start") || args.getFirst().equalsIgnoreCase("s")) {
+				args.removeFirst();
 			}
 		}
 		
@@ -50,15 +53,15 @@ public class Auction {
 		ItemStack typeStack = lot.getTypeStack();
 		
 		// Check banned items:
-		for (int i = 0; i < iAuction.config.getStringList("banned-items").size(); i++) {
-			if (items.isSameItem(typeStack, iAuction.config.getStringList("banned-items").get(i))) {
+		for (int i = 0; i < scope.config.getStringList("banned-items").size(); i++) {
+			if (items.isSameItem(typeStack, scope.config.getStringList("banned-items").get(i))) {
 				Messaging.sendMessage("auction-fail-banned", ownerName, this);
 				return false;
 			}
 		}
 		
-		if (iAuction.config.getDouble("auction-start-tax") > 0D) {
-			if (!iAuction.econ.has(ownerName, iAuction.config.getDouble("auction-start-tax"))) {
+		if (scope.config.getDouble("auction-start-tax") > 0D) {
+			if (!iAuction.econ.has(ownerName, scope.config.getDouble("auction-start-tax"))) {
 				Messaging.sendMessage("auction-fail-start-tax", ownerName, this);
 				return false;
 			}
@@ -69,45 +72,44 @@ public class Auction {
 			return false;
 		}
 
-		if (iAuction.config.getDouble("auction-start-tax") > 0D) {
-			if (iAuction.econ.has(ownerName, iAuction.config.getDouble("auction-start-tax"))) {
+		if (scope.config.getDouble("auction-start-tax") > 0D) {
+			if (iAuction.econ.has(ownerName, scope.config.getDouble("auction-start-tax"))) {
 				Messaging.sendMessage("auction-start-tax", getOwner(), this);
-				iAuction.econ.withdrawPlayer(ownerName, iAuction.config.getDouble("auction-start-tax"));
-				if (!iAuction.config.getString("deposit-tax-to-user").isEmpty()) iAuction.econ.depositPlayer(iAuction.config.getString("deposit-tax-to-user"), iAuction.config.getDouble("auction-start-tax"));
+				iAuction.econ.withdrawPlayer(ownerName, scope.config.getDouble("auction-start-tax"));
+				if (!scope.config.getString("deposit-tax-to-user").isEmpty()) iAuction.econ.depositPlayer(scope.config.getString("deposit-tax-to-user"), scope.config.getDouble("auction-start-tax"));
 			}
 		}
 
 		active = true;
-		iAuction.currentAuctionOwnerLocation = iAuction.server.getPlayer(ownerName).getLocation().clone();
-		iAuction.currentAuctionOwnerGamemode = iAuction.server.getPlayer(ownerName).getGameMode();
+		scope.currentAuctionOwnerLocation = iAuction.server.getPlayer(ownerName).getLocation().clone();
+		scope.currentAuctionOwnerGamemode = iAuction.server.getPlayer(ownerName).getGameMode();
 		Messaging.sendMessage("auction-start", (CommandSender) null, this);
 		
 		// Set timer:
-		final Auction thisAuction = this;
 		countdown = time;
 		
-		countdownTimer = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
-		    public void run() {
-		    	thisAuction.countdown--;
-		    	if (thisAuction.countdown == 0) {
-		    		thisAuction.end(null);
-		    		return;
-		    	}
-		    	if (thisAuction.countdown < 4) {
-			    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
-			    	return;
-		    	}
-		    	if (thisAuction.time >= 20) {
-		    		if (thisAuction.countdown == (int) (thisAuction.time / 2)) {
-				    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, thisAuction);
-		    		}
-		    	}
-		    }
-		}, 20L, 20L);
+		countdownTimer = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, this, 20L, 20L);
 
 		info(null);
 		return true;
 	}
+	@Override
+	public void run() {
+    	countdown--;
+    	if (countdown == 0) {
+    		end(null);
+    		return;
+    	}
+    	if (countdown < 4) {
+	    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, this);
+	    	return;
+    	}
+    	if (time >= 20) {
+    		if (countdown == (int) (this.time / 2)) {
+		    	Messaging.sendMessage("timer-countdown-notification", (CommandSender) null, this);
+    		}
+    	}
+    }
 	public void info(CommandSender sender) {
 		ItemStack itemType = this.getLotType();
 		short maxDurability = itemType.getType().getMaxDurability();
@@ -150,7 +152,7 @@ public class Auction {
 	}
 	private void dispose() {
 		plugin.getServer().getScheduler().cancelTask(countdownTimer);
-		plugin.detachAuction(this);
+		scope.detachAuction(this);
 	}
 	public Boolean isValid() {
 		if (!parseHeldItem()) return false;
@@ -168,7 +170,7 @@ public class Auction {
 			failBid(bid, bid.getError());
 			return;
 		}
-		if (ownerName.equals(bidder.getName()) && !iAuction.config.getBoolean("allow-bid-on-own-auction")) {
+		if (ownerName.equals(bidder.getName()) && !scope.config.getBoolean("allow-bid-on-own-auction")) {
 			failBid(bid, "bid-fail-is-auction-owner");
 			return;
 		}
@@ -197,7 +199,7 @@ public class Auction {
 		AuctionBid winner = null;
 		AuctionBid looser = null;
 		
-		if (iAuction.config.getBoolean("use-old-bid-logic")) {
+		if (scope.config.getBoolean("use-old-bid-logic")) {
 			if (bid.getMaxBidAmount() > currentBid.getMaxBidAmount()) {
 				winner = bid;
 				looser = currentBid;
@@ -261,8 +263,8 @@ public class Auction {
 			currentBid.cancelBid();
 		}
 		currentBid = newBid;
-		iAuction.currentBidPlayerLocation = iAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
-		iAuction.currentBidPlayerGamemode = iAuction.server.getPlayer(newBid.getBidder()).getGameMode();
+		scope.currentBidPlayerLocation = iAuction.server.getPlayer(newBid.getBidder()).getLocation().clone();
+		scope.currentBidPlayerGamemode = iAuction.server.getPlayer(newBid.getBidder()).getGameMode();
 		Messaging.sendMessage(reason, (CommandSender) null, this);
 	}
 	private Boolean parseHeldItem() {
@@ -280,7 +282,7 @@ public class Auction {
 		ItemStack itemType = lot.getTypeStack();
 		
 		if (
-				!iAuction.config.getBoolean("allow-damaged-items") &&
+				!scope.config.getBoolean("allow-damaged-items") &&
 				itemType.getType().getMaxDurability() > 0 &&
 				itemType.getDurability() > 0
 		) {
@@ -321,29 +323,29 @@ public class Auction {
 		if (startingBid < 0) {
 			Messaging.sendMessage("auction-fail-starting-bid-too-low", ownerName, this);
 			return false;
-		} else if (startingBid > 0 && startingBid > functions.getSafeMoney(iAuction.config.getDouble("max-starting-bid")) ) {
+		} else if (startingBid > 0 && startingBid > functions.getSafeMoney(scope.config.getDouble("max-starting-bid")) ) {
 			Messaging.sendMessage("auction-fail-starting-bid-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidIncrement() {
-		if (getMinBidIncrement() < functions.getSafeMoney(iAuction.config.getDouble("min-bid-increment"))) {
+		if (getMinBidIncrement() < functions.getSafeMoney(scope.config.getDouble("min-bid-increment"))) {
 			Messaging.sendMessage("auction-fail-increment-too-low", ownerName, this);
 			return false;
 		}
-		if (getMinBidIncrement() > functions.getSafeMoney(iAuction.config.getDouble("max-bid-increment"))) {
+		if (getMinBidIncrement() > functions.getSafeMoney(scope.config.getDouble("max-bid-increment"))) {
 			Messaging.sendMessage("auction-fail-increment-too-high", ownerName, this);
 			return false;
 		}
 		return true;
 	}
 	private Boolean isValidTime() {
-		if (time < iAuction.config.getInt("min-auction-time")) {
+		if (time < scope.config.getInt("min-auction-time")) {
 			Messaging.sendMessage("auction-fail-time-too-low", ownerName, this);
 			return false;
 		}
-		if (time > iAuction.config.getInt("max-auction-time")) {
+		if (time > scope.config.getInt("max-auction-time")) {
 			Messaging.sendMessage("auction-fail-time-too-high", ownerName, this);
 			return false;
 		}
@@ -353,13 +355,13 @@ public class Auction {
 		if (quantity > 0) return true;
 
 		ItemStack lotType = lot.getTypeStack();
-		if (args.length > 0) {
-			if (args[0].equalsIgnoreCase("this")) {
+		if (!args.isEmpty()) {
+			if (args.getFirst().equalsIgnoreCase("this")) {
 				quantity = lotType.getAmount();
-			} else if (args[0].equalsIgnoreCase("all")) {
+			} else if (args.getFirst().equalsIgnoreCase("all")) {
 				quantity = items.getAmount(ownerName, lotType);
-			} else if (args[0].matches("[0-9]{1,7}")) {
-				quantity = Integer.parseInt(args[0]);
+			} else if (args.getFirst().matches("[0-9]{1,7}")) {
+				quantity = Integer.parseInt(args.getFirst());
 			} else {
 				Messaging.sendMessage("parse-error-invalid-quantity", ownerName, this);
 				return false;
@@ -376,15 +378,15 @@ public class Auction {
 	private Boolean parseArgStartingBid() {
 		if (startingBid > 0) return true;
 		
-		if (args.length > 1) {
-			if (args[1].matches(iAuction.decimalRegex)) {
-				startingBid = functions.getSafeMoney(Double.parseDouble(args[1]));
+		if (args.size() > 1) {
+			if (args.get(1).matches(iAuction.decimalRegex)) {
+				startingBid = functions.getSafeMoney(Double.parseDouble(args.get(1)));
 			} else {
 				Messaging.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
 				return false;
 			}
 		} else {
-			startingBid = functions.getSafeMoney(iAuction.config.getDouble("default-starting-bid"));
+			startingBid = functions.getSafeMoney(scope.config.getDouble("default-starting-bid"));
 		}
 		if (startingBid < 0) {
 			Messaging.sendMessage("parse-error-invalid-starting-bid", ownerName, this);
@@ -395,15 +397,15 @@ public class Auction {
 	private Boolean parseArgIncrement() {
 		if (minBidIncrement > 0) return true;
 
-		if (args.length > 2) {
-			if (args[2].matches(iAuction.decimalRegex)) {
-				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args[2]));
+		if (args.size() > 2) {
+			if (args.get(2).matches(iAuction.decimalRegex)) {
+				minBidIncrement = functions.getSafeMoney(Double.parseDouble(args.get(2)));
 			} else {
 				Messaging.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
 				return false;
 			}
 		} else {
-			minBidIncrement = functions.getSafeMoney(iAuction.config.getDouble("default-bid-increment"));
+			minBidIncrement = functions.getSafeMoney(scope.config.getDouble("default-bid-increment"));
 		}
 		if (minBidIncrement < 0) {
 			Messaging.sendMessage("parse-error-invalid-bid-increment", ownerName, this);
@@ -414,15 +416,15 @@ public class Auction {
 	private Boolean parseArgTime() {
 		if (time > 0) return true;
 
-		if (args.length > 3) {
-			if (args[3].matches("[0-9]{1,7}")) {
-				time = Integer.parseInt(args[3]);
+		if (args.size() > 3) {
+			if (args.get(3).matches("[0-9]{1,7}")) {
+				time = Integer.parseInt(args.get(3));
 			} else {
 				Messaging.sendMessage("parse-error-invalid-time", ownerName, this);
 				return false;
 			}
 		} else {
-			time = iAuction.config.getInt("default-auction-time");
+			time = scope.config.getInt("default-auction-time");
 		}
 		if (time < 0) {
 			Messaging.sendMessage("parse-error-invalid-time", ownerName, this);

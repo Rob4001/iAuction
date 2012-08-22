@@ -10,10 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.flobi.WhatIsIt.WhatIsIt;
+
 import couk.rob4001.iauction.iAuction;
 
 
 public class items {
+	public static boolean useWhatIsIt;
+	
 	// Some of this was taken from Vault's item classes.
 	public static boolean isSameItem(ItemStack item, String searchString) {
 		
@@ -187,12 +191,24 @@ public class items {
 		return false;
 	}
 	
-	//TODO: change these to use WhatisIt or something else
+	//TODO: Check this is proper usage 
+	//TODO: Change non whatisit enchantment implementation?
 	public static String enchantmentName(Entry<Enchantment, Integer> enchantment) {
+		if (useWhatIsIt){
+			return WhatIsIt.enchantmentName(enchantment);
+		}else{
+		
+		
 		return enchantment.getKey().getName();
+		}
 	}
 	public static String itemName(ItemStack typeLot) {
-		return Items.itemByStack(typeLot).getName();
+		if (useWhatIsIt){
+			return WhatIsIt.itemName(typeLot);
+		}else{
+			return Items.itemByStack(typeLot).getName();
+		}
+
 	}
 	
 }

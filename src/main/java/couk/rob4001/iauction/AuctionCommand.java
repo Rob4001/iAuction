@@ -19,11 +19,9 @@ public class AuctionCommand {
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 	    	Player player = null;
 	    	Auction auction = null;
-			// TODO: Figure out auction for context.
-			// In the mean time, use public auction.
+
 	    	AuctionScope scope = plugin.getScope(sender);
 			auction = scope.getCurrentAuction();
-			String userScope = "public_auction";
 			String playerName = "";
 
 	    	if (sender instanceof Player) {
@@ -57,7 +55,7 @@ public class AuctionCommand {
 	    	
 	    	if (suspendAllAuctions) {
 		    	if (args.length == 1 && args[0].equalsIgnoreCase("resume")) {
-					if (player != null && !iAuction.perms.has(player, "auction.admin")) {
+					if (player != null && !plugin.perms.has(player, "auction.admin")) {
 		    			Messaging.sendMessage("no-permission", sender, null);
 		    			return true;
 					}
@@ -78,7 +76,7 @@ public class AuctionCommand {
 	    	if (cmd.getName().equalsIgnoreCase("auction")) {
 	    		if (args.length > 0) {
 	    			if (args[0].equalsIgnoreCase("reload")) {
-	    				if (player != null && !iAuction.perms.has(player, "auction.admin")) {
+	    				if (player != null && !plugin.perms.has(player, "auction.admin")) {
 	    	    			Messaging.sendMessage("no-permission", sender, null);
 	    	    			return true;
 	    				}
@@ -87,7 +85,7 @@ public class AuctionCommand {
 		    			Messaging.sendMessage("plugin-reloaded", sender, null);
 	    				return true;
 	    			} else if (args[0].equalsIgnoreCase("orphans")) {
-	    				if (player != null && !iAuction.perms.has(player, "auction.admin")) {
+	    				if (player != null && !plugin.perms.has(player, "auction.admin")) {
 	    	    			Messaging.sendMessage("no-permission", sender, null);
 	    	    			return true;
 	    				}
@@ -101,7 +99,7 @@ public class AuctionCommand {
 
 	    				return true;
 	    			} else if (args[0].equalsIgnoreCase("resume")) {
-	    				if (player != null && !iAuction.perms.has(player, "auction.admin")) {
+	    				if (player != null && !plugin.perms.has(player, "auction.admin")) {
 	    	    			Messaging.sendMessage("no-permission", sender, null);
 	    	    			return true;
 	    				}
@@ -118,7 +116,7 @@ public class AuctionCommand {
 	    				
 	    				return true;
 	    			} else if (args[0].equalsIgnoreCase("suspend")) {
-	    				if (player != null && !iAuction.perms.has(player, "auction.admin")) {
+	    				if (player != null && !plugin.perms.has(player, "auction.admin")) {
 	    	    			Messaging.sendMessage("no-permission", sender, null);
 	    	    			return true;
 	    				}
@@ -136,7 +134,7 @@ public class AuctionCommand {
 	    		    			return true;
 	    					}
 	    					
-	    					if (iAuction.perms.has(playerToSuspend, "auction.admin")) {
+	    					if (plugin.perms.has(playerToSuspend, "auction.admin")) {
 	    		    			Messaging.sendMessage("suspension-user-fail-is-admin", sender, null);
 	    		    			return true;
 	    					}
@@ -180,12 +178,12 @@ public class AuctionCommand {
 	    	    			return true;
 	    	    		}
 	    	    			
-	    				if (!iAuction.perms.has(player, "auction.start")) {
+	    				if (!plugin.perms.has(player, "auction.start")) {
 	    	    			Messaging.sendMessage("no-permission", sender, null);
 	    	    			return true;
 	    				}
-	    				//TODO:Change this to scope
-						plugin.getScope(player).queueAuction(new Auction(plugin, player, args, userScope), player, auction);
+	    		
+						plugin.getScope(player).queueAuction(new Auction(plugin, player, args, scope), player, auction);
 						
 						return true;
 	    			} else if (args[0].equalsIgnoreCase("cancel") || args[0].equalsIgnoreCase("c")) {
@@ -193,7 +191,7 @@ public class AuctionCommand {
 	    					Messaging.sendMessage("auction-fail-no-auction-exists", sender, auction);
 	    					return true;
 	    				}
-						if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || iAuction.perms.has(player, "auction.admin")) {
+						if (player == null || player.getName().equalsIgnoreCase(auction.getOwner()) || plugin.perms.has(player, "auction.admin")) {
 							if (plugin.getConfig().getInt("cancel-prevention-seconds") > auction.getRemainingTime() || plugin.getConfig().getInt("cancel-prevention-percent") > (double)auction.getRemainingTime() / (double)auction.getTotalTime() * 100D) {
 		    					Messaging.sendMessage("auction-fail-cancel-prevention", player, auction);
 							} else {
@@ -255,7 +253,7 @@ public class AuctionCommand {
 	    			Messaging.sendMessage("bid-fail-gamemode-creative", sender, null);
 	    			return true;
 	    		}
-				if (!iAuction.perms.has(player, "auction.bid")) {
+				if (!plugin.perms.has(player, "auction.bid")) {
 	    			Messaging.sendMessage("no-permission", sender, null);
 	    			return true;
 				}
