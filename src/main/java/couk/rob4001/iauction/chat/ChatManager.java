@@ -13,7 +13,7 @@ public class ChatManager {
 
 	public ChatManager(iAuction plugin) {
 		ChatManager.plugin = plugin;
-		
+
 		boolean found = false;
 
 		if (plugin.getServer().getPluginManager().getPlugin("Herochat") != null) {
@@ -24,16 +24,19 @@ public class ChatManager {
 		if (plugin.getServer().getPluginManager().getPlugin("ChannelChat") != null) {
 			chats.add(new ChannelChat().setup());
 			found = true;
-			plugin.getLogger().info("[iAuction] ChannelChat Integration Enabled");
+			plugin.getLogger().info(
+					"[iAuction] ChannelChat Integration Enabled");
 		}
-		if (plugin.getServer().getPluginManager().getPlugin("iChat")!= null){
+		if (plugin.getServer().getPluginManager().getPlugin("iChat") != null) {
 			chats.add(new NonChannelChat().setup());
 			found = true;
-			plugin.getLogger().info("[iAuction] Non-ChannelChat Integration Enabled");
+			plugin.getLogger().info(
+					"[iAuction] Non-ChannelChat Integration Enabled");
 		}
-		if (!found){
+		if (!found) {
 			chats.add(new NonChannelChat().setup());
-			plugin.getLogger().info("[iAuction] No Chat plugin found: Enabling Non-ChannelCHat ");
+			plugin.getLogger()
+					.info("[iAuction] No Chat plugin found: Enabling Non-ChannelCHat ");
 		}
 	}
 
@@ -46,13 +49,14 @@ public class ChatManager {
 			chat.broadcast(msg);
 		}
 	}
-	
-	public static void addListener(Player p ){
+
+	public static void addListener(Player p) {
 		for (Chat<?> chat : chats) {
 			chat.addListener(p);
 		}
 	}
-	public static void removeListener(Player p ){
+
+	public static void removeListener(Player p) {
 		for (Chat<?> chat : chats) {
 			chat.removeListener(p);
 		}

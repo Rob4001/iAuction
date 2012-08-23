@@ -4,17 +4,16 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+public class NonChannelChat implements Chat<NonChannelChat> {
 
-public class NonChannelChat implements Chat<NonChannelChat>{
-	
 	ArrayList<Player> listeners = new ArrayList<Player>();
 
 	@Override
 	public void broadcast(String Msg) {
-		for (Player p : listeners){
+		for (Player p : listeners) {
 			p.sendMessage(Msg);
 		}
-		
+
 	}
 
 	@Override
@@ -24,16 +23,16 @@ public class NonChannelChat implements Chat<NonChannelChat>{
 
 	@Override
 	public void addListener(Player p) {
-		if(!listeners.contains(p)){
-		listeners.add(p);
+		if (!listeners.contains(p)) {
+			listeners.add(p);
 		}
 	}
 
 	@Override
 	public void removeListener(Player p) {
-		
+
 		listeners.remove(p);
-		
+
 	}
 
 }

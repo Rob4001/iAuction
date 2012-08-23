@@ -17,17 +17,19 @@ public class AuctionLot implements java.io.Serializable {
 	private String ownerName;
 	private int quantity = 0;
 	private int lotTypeId;
-	@SuppressWarnings("unused") // Will be necessary later when Bukkit gets fixed.
+	@SuppressWarnings("unused")
+	// Will be necessary later when Bukkit gets fixed.
 	private byte lotDataData;
 	private short lotDurability;
 	private Map<Integer, Integer> lotEnchantments;
 	private int sourceStackQuantity = 0;
-	
+
 	public AuctionLot(ItemStack lotType, String lotOwner) {
 		// Lots can only have one type of item per lot.
 		ownerName = lotOwner;
 		setLotType(lotType);
 	}
+
 	public boolean AddItems(int addQuantity, boolean removeFromOwner) {
 		if (removeFromOwner) {
 			if (!items.hasAmount(ownerName, addQuantity, getTypeStack())) {
@@ -38,21 +40,22 @@ public class AuctionLot implements java.io.Serializable {
 		quantity += addQuantity;
 		return true;
 	}
-	
+
 	public void winLot(String winnerName) {
 		giveLot(winnerName);
 	}
+
 	public void cancelLot() {
 		giveLot(ownerName);
 	}
-	
-	
+
 	private void giveLot(String playerName) {
 		ownerName = playerName;
-		if (quantity == 0) return;
+		if (quantity == 0)
+			return;
 		ItemStack lotTypeLock = getTypeStack();
 		Player player = iAuction.server.getPlayer(playerName);
-		
+
 		int maxStackSize = lotTypeLock.getType().getMaxStackSize();
 		if (player != null && player.isOnline()) {
 			int amountToGive = 0;
@@ -75,37 +78,42 @@ public class AuctionLot implements java.io.Serializable {
 			}
 			if (quantity > 0) {
 				// Drop items at player's feet.
-				
+
 				// Move items to drop lot.
 				typeStack.setAmount(quantity);
 				quantity = 0;
-				
+
 				// Drop lot.
-				player.getWorld().dropItemNaturally(player.getLocation(), typeStack);
+				player.getWorld().dropItemNaturally(player.getLocation(),
+						typeStack);
 				Messaging.sendMessage("lot-drop", player, null);
 			}
 		} else {
 			// Player is offline, queue lot for give on login.
 			// Create orphaned lot to try to give when inventory clears up.
 			final AuctionLot orphanLot = new AuctionLot(lotTypeLock, playerName);
-			
+
 			// Move items to orphan lot
 			orphanLot.AddItems(quantity, false);
 			quantity = 0;
-			
+
 			// Queue for distribution on space availability.
 			iAuction.orphanLots.add(orphanLot);
 			functions.saveObject(iAuction.orphanLots, "orphanLots.ser");
 		}
 	}
+
 	public ItemStack getTypeStack() {
 		ItemStack lotTypeLock = new ItemStack(lotTypeId, 1, lotDurability);
 		for (Entry<Integer, Integer> enchantment : lotEnchantments.entrySet()) {
-			lotTypeLock.addEnchantment(new EnchantmentWrapper(enchantment.getKey()), enchantment.getValue());
+			lotTypeLock.addEnchantment(
+					new EnchantmentWrapper(enchantment.getKey()),
+					enchantment.getValue());
 		}
 		lotTypeLock.setAmount(sourceStackQuantity);
 		return lotTypeLock;
 	}
+
 	private void setLotType(ItemStack lotType) {
 		lotTypeId = lotType.getTypeId();
 		lotDataData = lotType.getData().getData();
@@ -113,16 +121,21 @@ public class AuctionLot implements java.io.Serializable {
 		sourceStackQuantity = lotType.getAmount();
 		lotEnchantments = new HashMap<Integer, Integer>();
 		Map<Enchantment, Integer> enchantmentList = lotType.getEnchantments();
-		for (Entry<Enchantment, Integer> enchantment : enchantmentList.entrySet()) {
-			lotEnchantments.put(enchantment.getKey().getId(), enchantment.getValue());
+		for (Entry<Enchantment, Integer> enchantment : enchantmentList
+				.entrySet()) {
+			lotEnchantments.put(enchantment.getKey().getId(),
+					enchantment.getValue());
 		}
 	}
+
 	public String getOwner() {
 		return ownerName;
 	}
+
 	public void setOwner(String ownerName) {
 		this.ownerName = ownerName;
 	}
+
 	public int getQuantity() {
 		return quantity;
 	}

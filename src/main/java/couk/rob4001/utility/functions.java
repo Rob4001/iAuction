@@ -26,110 +26,95 @@ public class functions {
 	public static String formatAmount(long safeMoney) {
 		return formatAmount(getUnsafeMoney(safeMoney));
 	}
-	
+
 	public static String formatAmount(double unsafeMoney) {
-		if (iAuction.econ == null) return "-";
+		if (iAuction.econ == null)
+			return "-";
 		return iAuction.econ.format(unsafeMoney);
 	}
-	
+
 	public static boolean withdrawPlayer(String playerName, long safeMoney) {
 		return withdrawPlayer(playerName, getUnsafeMoney(safeMoney));
 	}
-	
+
 	public static boolean withdrawPlayer(String playerName, double unsafeMoney) {
-		EconomyResponse receipt = iAuction.econ.withdrawPlayer(playerName, unsafeMoney);
+		EconomyResponse receipt = iAuction.econ.withdrawPlayer(playerName,
+				unsafeMoney);
 		return receipt.transactionSuccess();
 	}
-	
+
 	public static boolean depositPlayer(String playerName, double unsafeMoney) {
-		EconomyResponse receipt = iAuction.econ.depositPlayer(playerName, unsafeMoney);
+		EconomyResponse receipt = iAuction.econ.depositPlayer(playerName,
+				unsafeMoney);
 		return receipt.transactionSuccess();
 	}
-	
+
 	public static long getSafeMoney(Double money) {
-        DecimalFormat twoDForm = new DecimalFormat("#");
-        return Long.valueOf(twoDForm.format(money * Math.pow(10, iAuction.decimalPlaces)));
+		DecimalFormat twoDForm = new DecimalFormat("#");
+		return Long.valueOf(twoDForm.format(money
+				* Math.pow(10, iAuction.decimalPlaces)));
 	}
-	
+
 	public static double getUnsafeMoney(long money) {
-		return (double)money / Math.pow(10, iAuction.decimalPlaces);
+		return (double) money / Math.pow(10, iAuction.decimalPlaces);
 	}
-	
+
 	public static void saveObject(Object arraylist, String filename) {
-    	File saveFile = new File(iAuction.dataFolder, filename);
-    	
-    	try {
-			//use buffering
-    		if (saveFile.exists()) saveFile.delete();
+		File saveFile = new File(iAuction.dataFolder, filename);
+
+		try {
+			// use buffering
+			if (saveFile.exists())
+				saveFile.delete();
 			OutputStream file = new FileOutputStream(saveFile.getAbsolutePath());
 			OutputStream buffer = new BufferedOutputStream(file);
 			ObjectOutput output = new ObjectOutputStream(buffer);
 			try {
 				output.writeObject(arraylist);
-			}
-			finally {
+			} finally {
 				output.close();
 			}
-  	    }  
-  	    catch(IOException ex){
-    		return;
-  	    }
-	}
-	@SuppressWarnings({ "unchecked", "finally" })
-	public static ArrayList<String> loadArrayListString(String filename) {
-    	File saveFile = new File(iAuction.dataFolder, filename);
-    	ArrayList<String> importedObjects = new ArrayList<String>();
-    	try {
-			//use buffering
-			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
-			InputStream buffer = new BufferedInputStream(file);
-			ObjectInput input = new ObjectInputStream (buffer);
-			importedObjects = (ArrayList<String>) input.readObject();
-			input.close();
-  	    }  
-		finally {
-  	    	return importedObjects;
+		} catch (IOException ex) {
+			return;
 		}
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	public static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
-    	File saveFile = new File(iAuction.dataFolder, filename);
-    	ArrayList<AuctionLot> importedObjects = new ArrayList<AuctionLot>();
-    	try {
-			//use buffering
+
+	@SuppressWarnings({ "unchecked", "finally" })
+	public static ArrayList<String> loadArrayListString(String filename) {
+		File saveFile = new File(iAuction.dataFolder, filename);
+		ArrayList<String> importedObjects = new ArrayList<String>();
+		try {
+			// use buffering
 			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
 			InputStream buffer = new BufferedInputStream(file);
-			ObjectInput input = new ObjectInputStream (buffer);
+			ObjectInput input = new ObjectInputStream(buffer);
+			importedObjects = (ArrayList<String>) input.readObject();
+			input.close();
+		} finally {
+			return importedObjects;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
+		File saveFile = new File(iAuction.dataFolder, filename);
+		ArrayList<AuctionLot> importedObjects = new ArrayList<AuctionLot>();
+		try {
+			// use buffering
+			InputStream file = new FileInputStream(saveFile.getAbsolutePath());
+			InputStream buffer = new BufferedInputStream(file);
+			ObjectInput input = new ObjectInputStream(buffer);
 			importedObjects = (ArrayList<AuctionLot>) input.readObject();
 			input.close();
-  	    } catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-		finally {
+		} finally {
 		}
-    	return importedObjects;
+		return importedObjects;
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

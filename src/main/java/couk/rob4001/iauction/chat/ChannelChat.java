@@ -20,7 +20,7 @@ public class ChannelChat implements Chat<ChannelChat> {
 	@Override
 	public ChannelChat setup() {
 		iAuction pl = ChatManager.getPlugin();
-		
+
 		pl.getConfig().addDefault("channelchat.channel", "trade");
 
 		ChannelManager cm = ChannelManager.getManager();
