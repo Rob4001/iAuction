@@ -272,8 +272,6 @@ public class AuctionCommand {
 					}
 					if (player.getName().equalsIgnoreCase(auction.getOwner())) {
 						auction.end(player);
-						// TODO not needed?
-						// publicAuction = null;
 					} else {
 						Messaging.sendMessage("auction-fail-not-owner-end",
 								player, auction);

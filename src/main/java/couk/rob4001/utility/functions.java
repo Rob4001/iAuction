@@ -107,10 +107,8 @@ public class functions {
 			importedObjects = (ArrayList<AuctionLot>) input.readObject();
 			input.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}

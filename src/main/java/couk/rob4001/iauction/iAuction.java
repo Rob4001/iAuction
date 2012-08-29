@@ -240,7 +240,7 @@ public class iAuction extends JavaPlugin {
 		Messaging.sendMessage("plugin-disabled",
 				getServer().getConsoleSender(), null);
 
-		// TODO: Save orphan lots from save file.
+		functions.saveObject(orphanLots, "orphanLots.ser");
 	}
 
 	// private static void broadcastMessage(String message) {
