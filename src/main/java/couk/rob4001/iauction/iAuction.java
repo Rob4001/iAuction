@@ -118,6 +118,9 @@ public class iAuction extends JavaPlugin {
 		setupPermissions();
 		loadConfig();
 		loadScopes();
+		
+		// Initialize Messaging class.
+		new Messaging(this);
 
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, Messaging.chatPrepClean(textConfig
