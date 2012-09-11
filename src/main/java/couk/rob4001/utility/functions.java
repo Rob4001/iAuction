@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,7 +97,7 @@ public class functions {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename) {
+	public static ArrayList<AuctionLot> loadArrayListAuctionLot(String filename, boolean ignoreMissingFileException) {
 		File saveFile = new File(iAuction.dataFolder, filename);
 		ArrayList<AuctionLot> importedObjects = new ArrayList<AuctionLot>();
 		try {
@@ -106,6 +107,8 @@ public class functions {
 			ObjectInput input = new ObjectInputStream(buffer);
 			importedObjects = (ArrayList<AuctionLot>) input.readObject();
 			input.close();
+		} catch (FileNotFoundException e) {
+			if (!ignoreMissingFileException) e.printStackTrace(); 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

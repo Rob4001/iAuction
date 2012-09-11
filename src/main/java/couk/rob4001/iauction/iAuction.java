@@ -133,7 +133,7 @@ public class iAuction extends JavaPlugin {
 			return;
 		}
 
-		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser");
+		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser", true);
 		voluntarilyDisabledUsers = functions
 				.loadArrayListString("voluntarilyDisabledUsers.ser");
 		suspendedUsers = functions.loadArrayListString("suspendedUsers.ser");
