@@ -118,6 +118,9 @@ public class iAuction extends JavaPlugin {
 		setupPermissions();
 		loadConfig();
 		loadScopes();
+		
+		// Initialize Messaging class.
+		new Messaging(this);
 
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, Messaging.chatPrepClean(textConfig
@@ -133,7 +136,7 @@ public class iAuction extends JavaPlugin {
 			return;
 		}
 
-		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser");
+		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser", true);
 		voluntarilyDisabledUsers = functions
 				.loadArrayListString("voluntarilyDisabledUsers.ser");
 		suspendedUsers = functions.loadArrayListString("suspendedUsers.ser");
@@ -148,6 +151,8 @@ public class iAuction extends JavaPlugin {
 		Messaging.sendMessage("plugin-enabled", getServer().getConsoleSender(),
 				null);
 
+		getCommand("auction").setExecutor(new AuctionCommand(this));
+		getCommand("bid").setExecutor(new AuctionCommand(this));
 	}
 
 	/**

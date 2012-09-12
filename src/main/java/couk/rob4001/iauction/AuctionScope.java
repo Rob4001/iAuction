@@ -30,7 +30,7 @@ public class AuctionScope implements Listener {
 		this.config = c;
 
 		plugin.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new Runnable() {
+				.scheduleSyncRepeatingTask(plugin, new Runnable() {
 					public void run() {
 						checkAuctionQueue();
 					}
@@ -153,7 +153,7 @@ public class AuctionScope implements Listener {
 			// fact and
 			// remove the user.
 			plugin.getServer().getScheduler()
-					.scheduleAsyncDelayedTask(plugin, new Runnable() {
+					.scheduleSyncDelayedTask(plugin, new Runnable() {
 						public void run() {
 							player.teleport(currentAuctionOwnerLocation,
 									TeleportCause.PLUGIN);
@@ -172,7 +172,7 @@ public class AuctionScope implements Listener {
 			// fact and
 			// remove the user.
 			plugin.getServer().getScheduler()
-					.scheduleAsyncDelayedTask(plugin, new Runnable() {
+					.scheduleSyncDelayedTask(plugin, new Runnable() {
 						public void run() {
 							player.teleport(currentBidPlayerLocation,
 									TeleportCause.PLUGIN);

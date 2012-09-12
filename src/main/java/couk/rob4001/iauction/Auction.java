@@ -104,7 +104,7 @@ public class Auction implements Runnable {
 		countdown = time;
 
 		countdownTimer = plugin.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, this, 20L, 20L);
+				.scheduleSyncRepeatingTask(plugin, this, 20L, 20L);
 
 		info(null);
 		return true;

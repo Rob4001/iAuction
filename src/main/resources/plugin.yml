@@ -8,3 +8,7 @@ commands:
   auction:
     description: Manages auctions
     usage: /<command> help - show auctions help
+  bid:
+    description: Bid on auctions
+    usage: /<command> [bid] [maxbid] - Bid on auctions
+    
