@@ -151,6 +151,8 @@ public class iAuction extends JavaPlugin {
 		Messaging.sendMessage("plugin-enabled", getServer().getConsoleSender(),
 				null);
 
+		getCommand("auction").setExecutor(new AuctionCommand(this));
+		getCommand("bid").setExecutor(new AuctionCommand(this));
 	}
 
 	/**

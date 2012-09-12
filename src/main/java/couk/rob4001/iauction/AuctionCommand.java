@@ -2,13 +2,14 @@ package couk.rob4001.iauction;
 
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import couk.rob4001.utility.functions;
 import couk.rob4001.utility.items;
 
-public class AuctionCommand {
+public class AuctionCommand implements CommandExecutor {
 
 	private iAuction plugin;
 
