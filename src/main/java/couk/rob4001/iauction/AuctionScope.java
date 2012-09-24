@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import couk.rob4001.iauction.chat.ChatManager;
+
 public class AuctionScope implements Listener {
 
 	public static ArrayList<Auction> auctionQueue = new ArrayList<Auction>();
@@ -59,7 +61,7 @@ public class AuctionScope implements Listener {
 	public void queueAuction(Auction auctionToQueue, Player player,
 			Auction currentAuction) {
 		String playerName = player.getName();
-
+plugin.getLogger().info(getName() + " New auction Queued");
 		if (currentAuction == null) {
 			// Queuing because of interval not yet timed out.
 			// Allow a queue of 1 to override if 0 for this condition.
@@ -134,6 +136,8 @@ public class AuctionScope implements Listener {
 	@EventHandler
 	public void playerJoin(PlayerJoinEvent event) {
 		iAuction.killOrphan(event.getPlayer());
+		ChatManager.addListener(event.getPlayer().getName());
+		plugin.getLogger().info(event.getPlayer().getName() + " Has Joined Adding him as listener!");
 	}
 
 	@EventHandler

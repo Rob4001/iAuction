@@ -519,6 +519,7 @@ public class Auction implements Runnable {
 			}
 		} else {
 			time = scope.config.getInt("default-auction-time");
+			
 		}
 		if (time < 0) {
 			Messaging.sendMessage("parse-error-invalid-time", ownerName, this);

@@ -66,7 +66,7 @@ bid-fail-under-starting-bid: '&6The bidding must start at %s.'
 auction-queue-enter: Your auction has been queued. 
 auction-queue-fail-full: '&6The auction queue is full, try again later.'
 auction-queue-fail-in-queue: '&6You already have an auction queued.'
-auction-queue-fail-current-auction: '&6ou are already running an auction.'
+auction-queue-fail-current-auction: '&6You are already running an auction.'
 
 auction-cancel: The auction has been cancelled.
 auction-end-nobids: The auction ended with no bids.

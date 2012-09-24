@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import couk.rob4001.iauction.chat.ChatManager;
@@ -48,20 +47,6 @@ public class Messaging {
 
 	public static void sendMessage(String messageKey, CommandSender player,
 			Auction auction) {
-
-		if (player != null) {
-			if (player instanceof Player) {
-				if (plugin.voluntarilyDisabledUsers.indexOf(player.getName()) != -1) {
-					// Don't send this user any messages.
-					return;
-				}
-			} else {
-				if (plugin.voluntarilyDisabledUsers.indexOf("*console*") != -1) {
-					// Don't send console any messages.
-					return;
-				}
-			}
-		}
 
 		if (messageKey == null) {
 			return;

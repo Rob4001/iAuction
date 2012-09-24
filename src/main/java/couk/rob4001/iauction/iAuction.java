@@ -18,7 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import couk.rob4001.iauction.chat.ChatManager;
 import couk.rob4001.utility.functions;
+import couk.rob4001.utility.items;
 
 public class iAuction extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -72,10 +74,10 @@ public class iAuction extends JavaPlugin {
 
 	// TODO: Save these items when updated so we don't loose info when
 	// restarting.
-	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();;
-	public ArrayList<String> voluntarilyDisabledUsers = new ArrayList<String>();;
+	public static ArrayList<AuctionLot> orphanLots = new ArrayList<AuctionLot>();
+
 	public static ArrayList<String> suspendedUsers = new ArrayList<String>();
-	public ArrayList<AuctionScope> auctionScopes = new ArrayList<AuctionScope>();;
+	public ArrayList<AuctionScope> auctionScopes = new ArrayList<AuctionScope>();
 
 	// Eliminate orphan lots (i.e. try to give the items to a player again).
 	public static void killOrphan(Player player) {
@@ -125,8 +127,9 @@ public class iAuction extends JavaPlugin {
 		if (server.getPluginManager().getPlugin("WhatIsIt") == null) {
 			log.log(Level.SEVERE, Messaging.chatPrepClean(textConfig
 					.getString("no-whatisit")));
-			server.getPluginManager().disablePlugin(this);
-			return;
+			items.useWhatIsIt = false;
+		}else{
+			items.useWhatIsIt = true;
 		}
 
 		if (econ == null) {
@@ -137,8 +140,6 @@ public class iAuction extends JavaPlugin {
 		}
 
 		orphanLots = functions.loadArrayListAuctionLot("orphanLots.ser", true);
-		voluntarilyDisabledUsers = functions
-				.loadArrayListString("voluntarilyDisabledUsers.ser");
 		suspendedUsers = functions.loadArrayListString("suspendedUsers.ser");
 
 		// Load up the Plugin metrics
@@ -153,6 +154,7 @@ public class iAuction extends JavaPlugin {
 
 		getCommand("auction").setExecutor(new AuctionCommand(this));
 		getCommand("bid").setExecutor(new AuctionCommand(this));
+	new ChatManager(this);
 	}
 
 	/**
@@ -246,6 +248,7 @@ public class iAuction extends JavaPlugin {
 				getServer().getConsoleSender(), null);
 
 		functions.saveObject(orphanLots, "orphanLots.ser");
+		ChatManager.stop();
 	}
 
 	// private static void broadcastMessage(String message) {

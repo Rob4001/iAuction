@@ -214,6 +214,9 @@ public class items {
 	}
 
 	public static String itemName(ItemStack typeLot) {
+		if (typeLot == null){
+			return "No Item";
+		}
 		if (useWhatIsIt) {
 			return WhatIsIt.itemName(typeLot);
 		} else {

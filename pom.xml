@@ -17,12 +17,12 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.3.1-R2.0</version>
+			<version>1.3.2-R0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.milkbowl</groupId>
 			<artifactId>vault</artifactId>
-			<version>1.2.17-SNAPSHOT</version>
+			<version>1.2.18-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.herocraftonline.dthielke</groupId>
@@ -71,6 +71,7 @@
                 <includes>
                     <include>plugin.yml</include>
                     <include>language.yml</include>
+                    <include>config.yml</include>
                 </includes>
             </resource>
         </resources>
@@ -138,5 +139,5 @@
             </plugin>
         </plugins>
         </build>
-    <version>5.0.0</version>
+    <version>4.4.0</version>
 </project> 

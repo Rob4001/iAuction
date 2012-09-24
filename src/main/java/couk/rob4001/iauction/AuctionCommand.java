@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import couk.rob4001.iauction.chat.ChatManager;
 import couk.rob4001.utility.functions;
 import couk.rob4001.utility.items;
 
@@ -19,8 +20,7 @@ public class AuctionCommand implements CommandExecutor {
 
 	private boolean suspendAllAuctions = false;
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label,
-			String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
 		Auction auction = null;
 
@@ -37,23 +37,9 @@ public class AuctionCommand implements CommandExecutor {
 
 		if (cmd.getName().equalsIgnoreCase("auction") && args.length > 0
 				&& args[0].equalsIgnoreCase("on")) {
-			int index = plugin.voluntarilyDisabledUsers.indexOf(playerName);
-			if (index != -1) {
-				plugin.voluntarilyDisabledUsers.remove(index);
-			}
+			ChatManager.addListener(player.getName());
 			Messaging.sendMessage("auction-enabled", sender, null);
-			functions.saveObject(plugin.voluntarilyDisabledUsers,
-					"voluntarilyDisabledUsers.ser");
-			return true;
-		}
 
-		if (plugin.voluntarilyDisabledUsers.contains(playerName)) {
-			plugin.voluntarilyDisabledUsers
-					.remove(plugin.voluntarilyDisabledUsers.indexOf(playerName));
-			Messaging.sendMessage("auction-fail-disabled", sender, null);
-			plugin.voluntarilyDisabledUsers.add(playerName);
-			functions.saveObject(plugin.voluntarilyDisabledUsers,
-					"voluntarilyDisabledUsers.ser");
 			return true;
 		}
 
@@ -283,12 +269,7 @@ public class AuctionCommand implements CommandExecutor {
 						|| args[0].equalsIgnoreCase("off")
 						|| args[0].equalsIgnoreCase("silent")
 						|| args[0].equalsIgnoreCase("silence")) {
-					if (plugin.voluntarilyDisabledUsers.indexOf(playerName) == -1) {
-						Messaging.sendMessage("auction-disabled", sender, null);
-						plugin.voluntarilyDisabledUsers.add(playerName);
-						functions.saveObject(plugin.voluntarilyDisabledUsers,
-								"voluntarilyDisabledUsers.ser");
-					}
+					ChatManager.removeListener(player.getName());
 					return true;
 				} else if (args[0].equalsIgnoreCase("info")
 						|| args[0].equalsIgnoreCase("i")) {
