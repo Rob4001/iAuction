@@ -170,7 +170,7 @@ public class Messaging {
 			message = message.replace("%x", startAucitonTax);
 			message = message.replace("%X", endAuctionTax);
 
-			if (messageKey == "auction-info-enchantment") {
+			if (messageKey.equalsIgnoreCase("auction-info-enchantment")) {
 				if (auction != null && auction.getLotType() != null) {
 					Map<Enchantment, Integer> enchantments = auction
 							.getLotType().getEnchantments();

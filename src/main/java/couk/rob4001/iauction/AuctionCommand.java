@@ -237,8 +237,6 @@ public class AuctionCommand implements CommandExecutor {
 									auction);
 						} else {
 							auction.cancel(player);
-							// TODO:Not needed?
-							// publicAuction = null;
 						}
 					} else {
 						Messaging.sendMessage("auction-fail-not-owner-cancel",

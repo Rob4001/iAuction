@@ -12,9 +12,7 @@ public class ChatManager {
 
 	public ChatManager(iAuction plugin) {
 		ChatManager.plugin = plugin;
-		
 		listeners = functions.loadArrayListString("listeners.ser");
-	
 	}
 
 
@@ -39,7 +37,6 @@ public class ChatManager {
 
 	public static void stop() {
 		functions.saveObject(listeners, "listeners.ser");
-		
 	}
 
 }
