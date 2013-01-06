@@ -33,7 +33,7 @@
 			<artifactId>herochat</artifactId>
 			<version>4</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/lib/HeroChat.jar</systemPath>
+			<systemPath>${basedir}/lib/Herochat.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.feildmaster</groupId>
