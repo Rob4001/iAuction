@@ -1,0 +1,16 @@
+eco:
+  usedecimal: true
+bid:
+  sbidenable: true
+  minincrement: 5
+antisnipe:
+  enabled: true
+  endtime: 10
+  value: 10
+list:
+  maxinfoitems: 5
+start:
+  rows: 6
+  queuesize: 10
+  
+  

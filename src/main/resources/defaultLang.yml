@@ -1,0 +1,42 @@
+tag: '&f[&aiAuction&f] '
+start:
+  wrongargs: 'Invalid Args : Use &l/auction start <price> <time>&r'
+  hasauction: 'You already have an auction queued'
+  collection: 'You need to collect your items before starting a new auction'
+  timehigh: '&cThe auction goes on too long'
+  timelow: '&cThe auction is too short'
+  pricehigh: '&cThe price is too high'
+  pricelow: '&cThe price is too low'
+help: 'No help atm try &l/auction start &r{n}If you cannot hear anything &l/auction listen'
+listen:
+  'off': '&9Now muted auctions'
+  'on': '&9Now listening to Auctions'
+stop:
+  nowinner: 'There is no winner'
+  returned: 'Your items are returned to you {n} use &a/auction collect &fto retereive items'
+  winner: The winner is {0}
+  enjoy: 'You have won use /auction collect  to retreve items'
+  sold: 'Your items have been sold to {0}'
+auction:
+  collection: 'Please use &l/auction collect &rto collect items&r'
+  info: '{0} O: {1} T: {2} P: {3}'
+  listtitle: 'Queued Auctions:'
+  start: 'Auction Started by {0} {n} Items Included : {1} {n}For {2}'
+  timeleft: '&b{0} &9seconds left to bid!'
+bidding:
+  owner: '&cYou are the auction owner'
+  toolow: '&cYour bid is too low'
+  collection: '&cYou have a current lot to collect'
+  notenoughmoney: '&cYou dont have enough money to do that'
+  raised: 'Bidding raised by {1} to {0}'
+  sbidraised: 'A secretbid has raised to {0}'
+  winner: '&cYou are already winning the auction'
+  sbidnotenabled: '&cSecret bidding is disabled'
+  sbidtoolow: '&cYour secret bid is too low'
+  minincrement: '&cYour bidding is below the minimum increment of {0}'
+  notenoughmoney: '&cYou do not have enough money to do that'
+error:
+  perm: '&cYou dont have permission to do that'
+  economy: '&cNo Economy Found for iAuction'
+  invalidcommand: '&cThat Command is invalid'
+  nocollect: '&cNothing to collect'
