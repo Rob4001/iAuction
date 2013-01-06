@@ -29,7 +29,7 @@
 			<systemPath>${basedir}/lib/Vault.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>com.herocraftonline.dthielke</groupId>
+			<groupId>com.dthielke</groupId>
 			<artifactId>herochat</artifactId>
 			<version>4</version>
 			<scope>system</scope>
