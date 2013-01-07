@@ -12,5 +12,9 @@ list:
 start:
   rows: 6
   queuesize: 10
+  timelow: 10
+  timehigh: 120
+  pricelow: 10
+  pricehigh: 1000
   
   
