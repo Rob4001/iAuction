@@ -32,7 +32,10 @@ public class AuctionCommand implements CommandExecutor {
 		String main = args.removeFirst();
 
 		if (main.equalsIgnoreCase("start") || main.equalsIgnoreCase("s")) {
-			
+			if(!player.hasPermission("auction.start")){
+				Messaging.playerMessage(player, "error.perm");
+				return true;
+			}
 			if (iAuction.getInstance().hasAuction(player)) {
 				Messaging.playerMessage(player, "start.hasauction");
 				return true;
@@ -94,12 +97,20 @@ public class AuctionCommand implements CommandExecutor {
 			return true;
 		}
 		if (main.equalsIgnoreCase("listen")) {
+			if(!player.hasPermission("auction.listen")){
+				Messaging.playerMessage(player, "error.perm");
+				return true;
+			}
 			iAuction.getInstance().listeners.add(player.getDisplayName());
 			ChatManager.addListener(player);
 			Messaging.playerMessage(player, "listen.on");
 			return true;
 		}
 		if (main.equalsIgnoreCase("mute")) {
+			if(!player.hasPermission("auction.mute")){
+				Messaging.playerMessage(player, "error.perm");
+				return true;
+			}
 			if (iAuction.getInstance().listeners.contains(player
 					.getDisplayName())) {
 				iAuction.getInstance().listeners
@@ -125,7 +136,10 @@ public class AuctionCommand implements CommandExecutor {
 		Auction auc = iAuction.getCurrent();
 		if (auc != null) {
 			if (main.equalsIgnoreCase("bid")) {
-
+				if(!player.hasPermission("auction.bid")){
+					Messaging.playerMessage(player, "error.perm");
+					return true;
+				}
 				if (iAuction.getInstance().lots.containsKey(player
 						.getDisplayName())) {
 					Messaging.playerMessage(player, "bidding.collection");
