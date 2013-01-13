@@ -57,4 +57,8 @@ public class ChatManager {
 		}
 	}
 
+	public static void removeChats() {
+		chats.clear();
+	}
+
 }

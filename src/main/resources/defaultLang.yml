@@ -1,6 +1,7 @@
 tag: '&f[&aiAuction&f] '
 start:
   wrongargs: 'Invalid Args : Use &l/auction start <price> <time>&r'
+  noitems: '&cYou need to actually auction something'
   hasauction: 'You already have an auction queued'
   collection: 'You need to collect your items before starting a new auction'
   timehigh: '&cThe auction goes on too long'

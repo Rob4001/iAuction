@@ -117,7 +117,9 @@ public class iAuction extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
+		if (iAuction.getCurrent() != null){
 		 iAuction.getCurrent().stop();
+		}
 	        try {
 	        	FileOutputStream fos = new FileOutputStream(new File(
 						this.getDataFolder(), "lots.auction"));
@@ -145,7 +147,7 @@ public class iAuction extends JavaPlugin implements Listener {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-	        
+	        ChatManager.removeChats();
 	}
 	
 	@EventHandler

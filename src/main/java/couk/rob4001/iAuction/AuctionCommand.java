@@ -21,6 +21,7 @@ public class AuctionCommand implements CommandExecutor {
 		LinkedList<String> args = new LinkedList<String>(Arrays.asList(a));
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("Only players may auction");
+			return true;
 		}
 
 		Player player = (Player) sender;

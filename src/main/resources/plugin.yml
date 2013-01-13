@@ -3,6 +3,7 @@ main: couk.rob4001.iAuction.iAuction
 version: 5.0.0
 author: Rob4001
 description: Auctions for Bukkit Original by Zazara107
+depend: [Vault]
 commands:
   auction:
     description: Manages auctions
