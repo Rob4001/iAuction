@@ -57,15 +57,19 @@ public class AuctionCommand implements CommandExecutor {
 			}
 			if(time < iAuction.getInstance().getConfig().getInt("start.timelow")){
 				Messaging.playerMessage(player, "start.timelow");
+				return true;
 			}
 			if(time > iAuction.getInstance().getConfig().getInt("start.timehigh")){
 				Messaging.playerMessage(player, "start.timehigh");
+				return true;
 			}
 			if(price < iAuction.getInstance().getConfig().getInt("start.pricelow")&&!(-1 == iAuction.getInstance().getConfig().getInt("start.pricelow"))){
 				Messaging.playerMessage(player, "start.pricelow");
+				return true;
 			}
-			if(price < iAuction.getInstance().getConfig().getInt("start.pricehigh")&&!(-1 == iAuction.getInstance().getConfig().getInt("start.pricehigh"))){
+			if(price > iAuction.getInstance().getConfig().getInt("start.pricehigh")&&!(-1 == iAuction.getInstance().getConfig().getInt("start.pricehigh"))){
 				Messaging.playerMessage(player, "start.pricehigh");
+				return true;
 			}
 			
 			((Player) sender).openInventory(new BasicNewInterface(

@@ -7,7 +7,7 @@ start:
   timelow: '&cThe auction is too short'
   pricehigh: '&cThe price is too high'
   pricelow: '&cThe price is too low'
-help: 'No help atm try &l/auction start &r{n}If you cannot hear anything &l/auction listen'
+help: 'Auction Help {n} Find Auction command help here {n} http://dev.bukkit.org/server-mods/iauction/pages/commands/'
 listen:
   'off': '&9Now muted auctions'
   'on': '&9Now listening to Auctions'
