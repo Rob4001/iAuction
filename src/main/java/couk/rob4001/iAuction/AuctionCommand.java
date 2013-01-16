@@ -33,6 +33,7 @@ public class AuctionCommand implements CommandExecutor {
 		String main = args.removeFirst();
 
 		if (main.equalsIgnoreCase("start") || main.equalsIgnoreCase("s")) {
+			ChatManager.addListener(player);
 			if(!player.hasPermission("auction.start")){
 				Messaging.playerMessage(player, "error.perm");
 				return true;
@@ -82,6 +83,7 @@ public class AuctionCommand implements CommandExecutor {
 		}
 
 		if (main.equalsIgnoreCase("list") || main.equalsIgnoreCase("l")) {
+			ChatManager.addListener(player);
 			Iterator<Auction> it = iAuction.auctionQueue.iterator();
 			Integer i = 0;
 			Messaging.playerMessage(player, "auction.listtitle");
@@ -152,11 +154,13 @@ public class AuctionCommand implements CommandExecutor {
 				} else {
 					auc.bid(player, args);
 				}
+				ChatManager.addListener(player);
 				return true;
 			}
 			if (main.equalsIgnoreCase("info")) {
 				((Player) sender).openInventory(new BasicInfoInterface(auc
 						.getInventory()).getInventory());
+				ChatManager.addListener(player);
 				return true;
 			}
 

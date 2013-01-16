@@ -34,7 +34,7 @@ public class InventoryUtil {
 		int length = 32 -part.length();
 
 		if(name.length() > length){
-			name = name.substring(0,32 - name.length());
+			name = name.substring(0,length-1);
 		}
 		
 		return changeTitle(inv,name+part);
