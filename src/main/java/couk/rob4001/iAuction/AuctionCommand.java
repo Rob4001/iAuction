@@ -43,7 +43,7 @@ public class AuctionCommand implements CommandExecutor {
 				return true;
 			}
 			if (iAuction.getInstance().lots
-					.containsKey(player.getDisplayName())) {
+					.containsKey(player.getName())) {
 				Messaging.playerMessage(player, "start.collection");
 				return true;
 			}
@@ -104,7 +104,7 @@ public class AuctionCommand implements CommandExecutor {
 				Messaging.playerMessage(player, "error.perm");
 				return true;
 			}
-			iAuction.getInstance().listeners.add(player.getDisplayName());
+			iAuction.getInstance().listeners.add(player.getName());
 			ChatManager.addListener(player);
 			Messaging.playerMessage(player, "listen.on");
 			return true;
@@ -115,9 +115,9 @@ public class AuctionCommand implements CommandExecutor {
 				return true;
 			}
 			if (iAuction.getInstance().listeners.contains(player
-					.getDisplayName())) {
+					.getName())) {
 				iAuction.getInstance().listeners
-						.remove(player.getDisplayName());
+						.remove(player.getName());
 			}
 			ChatManager.removeListener(player);
 			Messaging.playerMessage(player, "listen.off");
@@ -126,7 +126,7 @@ public class AuctionCommand implements CommandExecutor {
 
 		if (main.equalsIgnoreCase("collect")) {
 			if (iAuction.getInstance().lots
-					.containsKey(player.getDisplayName())) {
+					.containsKey(player.getName())) {
 				
 
 				InventoryUtil.setupCollect(player).open();

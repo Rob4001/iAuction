@@ -63,7 +63,7 @@ public class InventoryUtil {
 		Inventory inv = Bukkit.createInventory(tmp, iAuction.getInstance().getConfig().getInt("start.rows") * 9,
 				player.getDisplayName());
 		ArrayList<CardboardBox> box = iAuction.getInstance().lots
-				.get(player.getDisplayName());
+				.get(player.getName());
 		ItemStack[] is = new ItemStack[box.size()];
 		for (int i = 0; i < box.size(); i++) {
 			is[i] = box.get(i).unbox();

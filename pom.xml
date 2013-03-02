@@ -4,7 +4,7 @@
 
 	<groupId>couk.rob4001</groupId>
 	<artifactId>iAuction</artifactId>
-	<version>5.0.1</version>
+	<version>5.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>iAuction</name>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.6-R0.1</version>
+			<version>1.4.7-R1.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

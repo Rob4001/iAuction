@@ -8,7 +8,7 @@ start:
   timelow: '&cThe auction is too short'
   pricehigh: '&cThe price is too high'
   pricelow: '&cThe price is too low'
-help: 'Auction Help {n} Find Auction command help here {n} http://dev.bukkit.org/server-mods/iauction/pages/commands/'
+help: '&9/auction help&f - shows this screen {n}&9/auction start <price> <time>{n}&9/auction list&f - Lists all auctions in the queue{n}&9/auction info&f - Opens the information GUI for the current auction {n}&9/auction listen&f - Enables announcements for auctions to the player{n}&9/auction bid <bid> [secretbid]{n}&9/auction mute &f- Disables announcements for auctions to the player{n}&9/auction end&f - Ends the auction early (Transaction occurs with current highest bidder){n}&9/auction cancel&f - Ends the auction early (Transaction does not happen){n}&9/auction collect&f - Opens the item collect GUI'
 listen:
   'off': '&9Now muted auctions'
   'on': '&9Now listening to Auctions'

@@ -10,6 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -69,6 +72,15 @@ public class CardboardMeta implements Serializable{
 		}
 		if(im instanceof SkullMeta){
 			return new CardboardSkull(im);
+		}
+		if(im instanceof FireworkMeta){
+			return new CardboardFirework(im);
+		}
+		if(im instanceof FireworkEffectMeta){
+			return new CardboardFireworkEffectMeta(im);
+		}
+		if(im instanceof EnchantmentStorageMeta){
+			return new CardboardEnchantmentStorage(im);
 		}
 		return new CardboardMeta(im);
 	}
