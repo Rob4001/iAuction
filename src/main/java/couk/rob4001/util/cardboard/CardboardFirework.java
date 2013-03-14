@@ -1,13 +1,10 @@
 package couk.rob4001.util.cardboard;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.MapMeta;
 
 public class CardboardFirework extends CardboardMeta {
 
