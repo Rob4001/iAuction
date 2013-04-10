@@ -144,7 +144,7 @@ public class AuctionCommand implements CommandExecutor {
 					return true;
 				}
 				if (iAuction.getInstance().lots.containsKey(player
-						.getDisplayName())) {
+						.getName())) {
 					Messaging.playerMessage(player, "bidding.collection");
 					return true;
 				}

@@ -58,7 +58,7 @@ public class BasicCollectInterface extends BasicInterface{
 			return;
 			}
 		}
-		iAuction.getInstance().lots.remove(owner.getDisplayName());
+		iAuction.getInstance().lots.remove(owner.getName());
 		
 	}
 	
