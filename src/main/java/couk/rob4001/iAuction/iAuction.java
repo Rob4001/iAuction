@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -258,17 +259,32 @@ public class iAuction extends JavaPlugin implements Listener {
 		return false;
 	}
 
-	public static void charge(Economy eco, String name, double bid) {
+	public static void chargedDeposit(Economy eco, OfflinePlayer owner, double bid) {
 
 String fee = iAuction.getInstance().getConfig().getString("bid.fee");
+if (!fee.equalsIgnoreCase("0")){
 if (fee.contains("%")){
 	fee = fee.replace("%", "");
 	int f = Integer.parseInt(fee);
-	bid -= f;
+	int remainder = 100 - f;
+	bid = bid /100;
+	bid = bid * remainder;
+	Messaging.playerMessage(owner.getPlayer(), "bidding.fee", fee);
 }else{
 	bid = bid - iAuction.getInstance().getConfig().getInt("bid.fee");
+	Messaging.playerMessage(owner.getPlayer(), "bidding.fee", eco.format(iAuction.getInstance().getConfig().getInt("bid.fee")));
 }
-		eco.withdrawPlayer(name,bid);
+}
+		eco.depositPlayer(owner.getName(),bid);
+		
+	}
+
+	public static void charge(Economy eco, OfflinePlayer owner) {
+		int fee = iAuction.getInstance().getConfig().getInt("start.fee");
+		if (fee != 0){
+			Messaging.playerMessage(owner.getPlayer(), "start.fee", Integer.toString(fee));
+		eco.withdrawPlayer(owner.getName(),fee);
+		}
 		
 	}
 

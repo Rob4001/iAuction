@@ -11,6 +11,7 @@ antisnipe:
 list:
   maxinfoitems: 5
 start:
+  fee: 0
   rows: 6
   queuesize: 10
   timelow: 10

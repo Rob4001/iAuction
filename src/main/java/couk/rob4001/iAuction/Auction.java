@@ -51,6 +51,7 @@ public class Auction implements Runnable, Serializable {
 						20L);
 		this.started = true;
 		this.eco = iAuction.getInstance().getEco();
+		iAuction.charge(eco, owner);
 		Messaging.broadcast("auction.start", this.owner.getName(),
 				InventoryUtil.parseItems(this.inv), this.eco.format(this.bid));
 		Messaging.broadcast("auction.timeleft", this.i.toString());
@@ -89,10 +90,8 @@ public class Auction implements Runnable, Serializable {
 
 	public void stop() {
 		if (this.winner != null) {
-			iAuction.charge(eco,this.winner.getName(), this.bid);
-			
-
-			this.eco.depositPlayer(this.owner.getName(), this.bid);
+			iAuction.chargedDeposit(eco,this.owner, this.bid);
+			this.eco.withdrawPlayer(this.winner.getName(), this.bid);
 
 			iAuction.getInstance().lots.put(this.winner.getName(),
 					InventoryUtil.box(this.inv));
