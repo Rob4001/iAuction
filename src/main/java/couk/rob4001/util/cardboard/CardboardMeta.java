@@ -18,74 +18,61 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class CardboardMeta implements Serializable{
-
-
+public class CardboardMeta implements Serializable {
 
 	private static final long serialVersionUID = -6517528980134985755L;
 	private final String display;
 	private final List<String> lore;
-    private final HashMap<CardboardEnchantment, Integer> enchants;
+	private final HashMap<CardboardEnchantment, Integer> enchants;
 
 	public CardboardMeta(ItemMeta im) {
-		display = im.getDisplayName();
-		lore = im.getLore();
-		 HashMap<CardboardEnchantment, Integer> map = new HashMap<CardboardEnchantment, Integer>();
-		 
-	        Map<Enchantment, Integer> enchantments = im.getEnchants();
-	 
-	        for(Enchantment enchantment : enchantments.keySet()) {
-	            map.put(new CardboardEnchantment(enchantment), enchantments.get(enchantment));
-	        }
-	        this.enchants = map;
-	}
+		this.display = im.getDisplayName();
+		this.lore = im.getLore();
+		HashMap<CardboardEnchantment, Integer> map = new HashMap<CardboardEnchantment, Integer>();
 
+		Map<Enchantment, Integer> enchantments = im.getEnchants();
+
+		for (Enchantment enchantment : enchantments.keySet()) {
+			map.put(new CardboardEnchantment(enchantment),
+					enchantments.get(enchantment));
+		}
+		this.enchants = map;
+	}
 
 	public ItemMeta unbox(Material material) {
 		ItemMeta im = Bukkit.getServer().getItemFactory().getItemMeta(material);
-		im.setDisplayName(display);
-		im.setLore(lore);
-		
-        HashMap<Enchantment, Integer> map = new HashMap<Enchantment, Integer>();
-        
-        for(CardboardEnchantment cEnchantment : enchants.keySet()) {
-            map.put(cEnchantment.unbox(), enchants.get(cEnchantment));
-        }
- 
-        for(Entry<Enchantment, Integer> e : map.entrySet()){
-        	im.addEnchant(e.getKey(),e.getValue(), true);
-        }
-		
+		im.setDisplayName(this.display);
+		im.setLore(this.lore);
+
+		HashMap<Enchantment, Integer> map = new HashMap<Enchantment, Integer>();
+
+		for (CardboardEnchantment cEnchantment : this.enchants.keySet()) {
+			map.put(cEnchantment.unbox(), this.enchants.get(cEnchantment));
+		}
+
+		for (Entry<Enchantment, Integer> e : map.entrySet()) {
+			im.addEnchant(e.getKey(), e.getValue(), true);
+		}
+
 		return im;
 	}
 
-
 	public static CardboardMeta box(ItemMeta im) {
-		if(im instanceof BookMeta){
+		if (im instanceof BookMeta)
 			return new CardboardBook(im);
-		}
-		if(im instanceof LeatherArmorMeta){
+		if (im instanceof LeatherArmorMeta)
 			return new CardboardLeatherArmor(im);
-		}
-		if(im instanceof MapMeta){
+		if (im instanceof MapMeta)
 			return new CardboardMap(im);
-		}
-		if(im instanceof SkullMeta){
+		if (im instanceof SkullMeta)
 			return new CardboardSkull(im);
-		}
-		if(im instanceof FireworkMeta){
+		if (im instanceof FireworkMeta)
 			return new CardboardFirework(im);
-		}
-		if(im instanceof FireworkEffectMeta){
+		if (im instanceof FireworkEffectMeta)
 			return new CardboardFireworkEffectMeta(im);
-		}
-		if(im instanceof EnchantmentStorageMeta){
+		if (im instanceof EnchantmentStorageMeta)
 			return new CardboardEnchantmentStorage(im);
-		}
 		return new CardboardMeta(im);
 	}
-	
-	
-
 
 }

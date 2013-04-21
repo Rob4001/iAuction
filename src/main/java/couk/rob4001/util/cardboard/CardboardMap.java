@@ -11,13 +11,13 @@ public class CardboardMap extends CardboardMeta {
 
 	public CardboardMap(ItemMeta im) {
 		super(im);
-		scale = ((MapMeta)im).isScaling();
+		this.scale = ((MapMeta) im).isScaling();
 	}
-	
+
 	@Override
 	public ItemMeta unbox(Material material) {
-		MapMeta im = (MapMeta)super.unbox(material);
-		im.setScaling(scale);
+		MapMeta im = (MapMeta) super.unbox(material);
+		im.setScaling(this.scale);
 		return im;
 	}
 

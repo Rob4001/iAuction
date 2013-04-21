@@ -15,15 +15,15 @@ public class CardboardLeatherArmor extends CardboardMeta {
 
 	public CardboardLeatherArmor(ItemMeta im) {
 		super(im);
-		LeatherArmorMeta lm = (LeatherArmorMeta)im;
-		color = lm.getColor().asRGB();
-		
+		LeatherArmorMeta lm = (LeatherArmorMeta) im;
+		this.color = lm.getColor().asRGB();
+
 	}
-	
+
 	@Override
 	public ItemMeta unbox(Material material) {
-		LeatherArmorMeta im = (LeatherArmorMeta)super.unbox(material);
-		im.setColor(Color.fromRGB(color));
+		LeatherArmorMeta im = (LeatherArmorMeta) super.unbox(material);
+		im.setColor(Color.fromRGB(this.color));
 		return im;
 	}
 

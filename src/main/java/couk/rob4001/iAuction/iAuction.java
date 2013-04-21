@@ -23,14 +23,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 import couk.rob4001.iAuction.gui.GUIListener;
 import couk.rob4001.util.cardboard.CardboardBox;
 import couk.rob4001.util.chat.ChatManager;
 
 public class iAuction extends JavaPlugin implements Listener {
 
-	public static ArrayBlockingQueue<Auction> auctionQueue ;
+	public static ArrayBlockingQueue<Auction> auctionQueue;
 	public HashMap<String, ArrayList<CardboardBox>> lots = new HashMap<String, ArrayList<CardboardBox>>();
 	public ArrayList<String> listeners = new ArrayList<String>();
 	private static iAuction instance;
@@ -38,32 +37,32 @@ public class iAuction extends JavaPlugin implements Listener {
 	private Economy economy;
 	private YamlConfiguration langconfig;
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void onEnable() {
 		instance = this;
-		setupLanguages();
-		setupConfig();
-		auctionQueue = new ArrayBlockingQueue<Auction>(
-				getConfig().getInt("start.queuesize"), true);
+		this.setupLanguages();
+		this.setupConfig();
+		auctionQueue = new ArrayBlockingQueue<Auction>(this.getConfig().getInt(
+				"start.queuesize"), true);
 		new ChatManager(this);
-		if (!setupEconomy()) {
-			getLogger().log(Level.SEVERE, Messaging.get("error.economy"));
+		if (!this.setupEconomy()) {
+			this.getLogger().log(Level.SEVERE, Messaging.get("error.economy"));
 			this.setEnabled(false);
 			return;
 		}
-		
-		if (getServer().getPluginManager().getPlugin("WhatIsIt") != null) {
+
+		if (this.getServer().getPluginManager().getPlugin("WhatIsIt") != null) {
 			wiienabled = true;
-			getLogger().info("[iAuction] WhatIsIt Integration Enabled");
+			this.getLogger().info("[iAuction] WhatIsIt Integration Enabled");
 		}
 
 		this.getCommand("auction").setExecutor(new AuctionCommand());
 
 		this.getServer().getPluginManager()
 				.registerEvents(new GUIListener(), this);
-		this.getServer().getPluginManager()
-		.registerEvents(this, this);
-		
+		this.getServer().getPluginManager().registerEvents(this, this);
+
 		try {
 			BukkitMetricsLite metrics = new BukkitMetricsLite(this);
 			metrics.start();
@@ -76,7 +75,8 @@ public class iAuction extends JavaPlugin implements Listener {
 				FileInputStream fis = new FileInputStream(new File(
 						this.getDataFolder(), "lots.auction"));
 				ObjectInputStream ois = new ObjectInputStream(fis);
-				lots = (HashMap<String, ArrayList<CardboardBox>>) ois.readObject();
+				this.lots = (HashMap<String, ArrayList<CardboardBox>>) ois
+						.readObject();
 				ois.close();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -85,13 +85,13 @@ public class iAuction extends JavaPlugin implements Listener {
 			}
 
 		}
-		
+
 		if (new File(this.getDataFolder(), "listeners.auction").exists()) {
 			try {
 				FileInputStream fis = new FileInputStream(new File(
 						this.getDataFolder(), "listeners.auction"));
 				ObjectInputStream ois = new ObjectInputStream(fis);
-				listeners = (ArrayList<String>) ois.readObject();
+				this.listeners = (ArrayList<String>) ois.readObject();
 				ois.close();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -100,62 +100,61 @@ public class iAuction extends JavaPlugin implements Listener {
 			}
 
 		}
-		
-		if(!auctionQueue.isEmpty()){
+
+		if (!auctionQueue.isEmpty()) {
 			auctionQueue.peek().start();
 		}
-		
-		for(String name :listeners){
-			if(Bukkit.getPlayer(name) != null){
+
+		for (String name : this.listeners) {
+			if (Bukkit.getPlayer(name) != null) {
 				ChatManager.addListener(Bukkit.getPlayer(name));
-				getLogger().log(Level.INFO,name);
+				this.getLogger().log(Level.INFO, name);
 			}
 		}
-		
-		
 
 	}
 
+	@Override
 	public void onDisable() {
-		if (iAuction.getCurrent() != null){
-		 iAuction.getCurrent().stop();
+		if (iAuction.getCurrent() != null) {
+			iAuction.getCurrent().stop();
 		}
-	        try {
-	        	FileOutputStream fos = new FileOutputStream(new File(
-						this.getDataFolder(), "lots.auction"));
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(lots);
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	        try {
-	        	FileOutputStream fos = new FileOutputStream(new File(
-						this.getDataFolder(), "queue.auction"));
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(auctionQueue);
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	        try {
-	        	FileOutputStream fos = new FileOutputStream(new File(
-						this.getDataFolder(), "listeners.auction"));
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(listeners);
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	        ChatManager.removeChats();
+		try {
+			FileOutputStream fos = new FileOutputStream(new File(
+					this.getDataFolder(), "lots.auction"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(this.lots);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			FileOutputStream fos = new FileOutputStream(new File(
+					this.getDataFolder(), "queue.auction"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(auctionQueue);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			FileOutputStream fos = new FileOutputStream(new File(
+					this.getDataFolder(), "listeners.auction"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(this.listeners);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ChatManager.removeChats();
 	}
-	
+
 	@EventHandler
-	public void onJoin(PlayerJoinEvent e){
-		if(listeners.contains(e.getPlayer().getName())){
+	public void onJoin(PlayerJoinEvent e) {
+		if (this.listeners.contains(e.getPlayer().getName())) {
 			ChatManager.addListener(e.getPlayer());
 		}
-		if(lots.keySet().contains(e.getPlayer().getName())){
+		if (this.lots.keySet().contains(e.getPlayer().getName())) {
 			Messaging.playerMessage(e.getPlayer(), "auction.collection");
 		}
 	}
@@ -185,14 +184,14 @@ public class iAuction extends JavaPlugin implements Listener {
 
 	// Economy Stuff
 	private Boolean setupEconomy() {
-		RegisteredServiceProvider<Economy> economyProvider = getServer()
-				.getServicesManager().getRegistration(
-						net.milkbowl.vault.economy.Economy.class);
+		RegisteredServiceProvider<Economy> economyProvider = this.getServer()
+				.getServicesManager()
+				.getRegistration(net.milkbowl.vault.economy.Economy.class);
 		if (economyProvider != null) {
-			economy = economyProvider.getProvider();
+			this.economy = economyProvider.getProvider();
 		}
 
-		return (economy != null);
+		return (this.economy != null);
 	}
 
 	public Economy getEco() {
@@ -201,27 +200,25 @@ public class iAuction extends JavaPlugin implements Listener {
 
 	// Language Support
 	public YamlConfiguration getLangConfig() {
-		return langconfig;
+		return this.langconfig;
 	}
 
 	private void setupLanguages() {
-		InputStream langStream = getResource("defaultLang.yml");
-		langconfig = YamlConfiguration.loadConfiguration(new File(
-				getDataFolder(), "lang.yml"));
+		InputStream langStream = this.getResource("defaultLang.yml");
+		this.langconfig = YamlConfiguration.loadConfiguration(new File(this
+				.getDataFolder(), "lang.yml"));
 		if (langStream != null) {
 			YamlConfiguration defaultLang = YamlConfiguration
 					.loadConfiguration(langStream);
 			if (defaultLang != null) {
-				langconfig.setDefaults(defaultLang);
+				this.langconfig.setDefaults(defaultLang);
 			}
 		}
 
-
-
-		langconfig.options().copyDefaults(true);
+		this.langconfig.options().copyDefaults(true);
 
 		try {
-			langconfig.save(new File(getDataFolder(), "lang.yml"));
+			this.langconfig.save(new File(this.getDataFolder(), "lang.yml"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -229,34 +226,34 @@ public class iAuction extends JavaPlugin implements Listener {
 		Messaging.tag = this.getLangConfig().getString("tag");
 
 	}
-	public void setupConfig(){
-		InputStream confStream = getResource("defaultConf.yml");
-		
+
+	public void setupConfig() {
+		InputStream confStream = this.getResource("defaultConf.yml");
+
 		if (confStream != null) {
 			YamlConfiguration defaultConf = YamlConfiguration
 					.loadConfiguration(confStream);
 			if (defaultConf != null) {
-				getConfig().setDefaults(defaultConf);
+				this.getConfig().setDefaults(defaultConf);
 			}
 		}
-getConfig().options().copyDefaults(true);
-saveConfig();
+		this.getConfig().options().copyDefaults(true);
+		this.saveConfig();
 	}
 
 	public void saveLang() {
 		try {
-			langconfig.save(new File(getDataFolder(), "lang.yml"));
+			this.langconfig.save(new File(this.getDataFolder(), "lang.yml"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
-	public boolean hasAuction(Player player){
-		for(Auction a : auctionQueue){
-			if (a.getOwner() == player){
+
+	public boolean hasAuction(Player player) {
+		for (Auction a : auctionQueue) {
+			if (a.getOwner() == player)
 				return true;
-			}
 		}
 		return false;
 	}

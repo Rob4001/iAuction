@@ -14,13 +14,14 @@ public class CardboardFireworkEffectMeta extends CardboardMeta {
 
 	public CardboardFireworkEffectMeta(ItemMeta im) {
 		super(im);
-		FireworkEffectMeta fm = (FireworkEffectMeta)im;
-		effect = new CardboardFireworkEffect(fm.getEffect());
+		FireworkEffectMeta fm = (FireworkEffectMeta) im;
+		this.effect = new CardboardFireworkEffect(fm.getEffect());
 	}
-	
+
+	@Override
 	public ItemMeta unbox(Material material) {
-		FireworkEffectMeta im = (FireworkEffectMeta)super.unbox(material);
-		im.setEffect(effect.unbox());
+		FireworkEffectMeta im = (FireworkEffectMeta) super.unbox(material);
+		im.setEffect(this.effect.unbox());
 		return im;
 	}
 

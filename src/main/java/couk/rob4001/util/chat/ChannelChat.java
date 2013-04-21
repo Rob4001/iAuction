@@ -19,7 +19,7 @@ public class ChannelChat implements Chat<ChannelChat> {
 	@Override
 	public ChannelChat setup() {
 		JavaPlugin pl = ChatManager.getPlugin();
-		
+
 		pl.getConfig().addDefault("channelchat.channel", "trade");
 		pl.getConfig().addDefault("channelchat.enable", "true");
 
@@ -32,12 +32,12 @@ public class ChannelChat implements Chat<ChannelChat> {
 
 	@Override
 	public void addListener(Player p) {
-		c.addMember(p);
+		this.c.addMember(p);
 	}
 
 	@Override
 	public void removeListener(Player p) {
-		c.delMember(p);
+		this.c.delMember(p);
 	}
 
 }

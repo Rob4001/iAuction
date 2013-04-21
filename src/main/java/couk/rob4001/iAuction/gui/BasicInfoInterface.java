@@ -7,16 +7,17 @@ import org.bukkit.inventory.Inventory;
 import couk.rob4001.util.InventoryUtil;
 
 public class BasicInfoInterface extends BasicInterface {
-	
+
 	Inventory inventory;
 
 	public BasicInfoInterface(Inventory inv) {
-		
-		inventory = InventoryUtil.changeHolder(	inv, this);
+
+		this.inventory = InventoryUtil.changeHolder(inv, this);
 	}
 
+	@Override
 	public Inventory getInventory() {
-		return inventory;
+		return this.inventory;
 	}
 
 	@Override

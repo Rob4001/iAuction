@@ -5,7 +5,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public abstract class BasicInterface implements InventoryHolder {
-	
+
 	public abstract void onClick(InventoryClickEvent e);
 
 	public abstract void onClose(InventoryCloseEvent e);

@@ -11,13 +11,13 @@ public class CardboardSkull extends CardboardMeta {
 
 	public CardboardSkull(ItemMeta im) {
 		super(im);
-		owner = ((SkullMeta)im).getOwner();
+		this.owner = ((SkullMeta) im).getOwner();
 	}
-	
+
 	@Override
 	public ItemMeta unbox(Material material) {
-		SkullMeta im = (SkullMeta)super.unbox(material);
-		im.setOwner(owner);
+		SkullMeta im = (SkullMeta) super.unbox(material);
+		im.setOwner(this.owner);
 		return im;
 	}
 

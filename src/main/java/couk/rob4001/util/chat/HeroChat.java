@@ -11,17 +11,16 @@ public class HeroChat implements Chat<HeroChat> {
 
 	private Channel c;
 
-
 	@Override
 	public void broadcast(String Msg) {
-		c.announce(Msg);
+		this.c.announce(Msg);
 	}
 
 	@Override
 	public HeroChat setup() {
 		JavaPlugin pl = ChatManager.getPlugin();
-		pl.getConfig().addDefault("herochat.channel","trade");
-		pl.getConfig().addDefault("herochat.enable","true");
+		pl.getConfig().addDefault("herochat.channel", "trade");
+		pl.getConfig().addDefault("herochat.enable", "true");
 		pl.saveConfig();
 		com.dthielke.herochat.ChannelManager cm = Herochat.getChannelManager();
 		this.c = cm.getChannel(pl.getConfig().getString("herochat.channel"));
@@ -31,20 +30,21 @@ public class HeroChat implements Chat<HeroChat> {
 	@Override
 	public void addListener(Player p) {
 		Chatter chatter = Herochat.getChatterManager().getChatter(p);
-        if (chatter == null) return ;
-        
-            chatter.addChannel(c, true, true);
-    
+		if (chatter == null)
+			return;
+
+		chatter.addChannel(this.c, true, true);
+
 	}
 
 	@Override
 	public void removeListener(Player p) {
 		Chatter chatter = Herochat.getChatterManager().getChatter(p);
-        if (chatter == null) return ;
-        
-            chatter.removeChannel(c, true, true);
-    
-		
+		if (chatter == null)
+			return;
+
+		chatter.removeChannel(this.c, true, true);
+
 	}
 
 }

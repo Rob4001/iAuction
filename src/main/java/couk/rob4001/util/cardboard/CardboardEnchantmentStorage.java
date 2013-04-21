@@ -19,29 +19,31 @@ public class CardboardEnchantmentStorage extends CardboardMeta {
 
 	public CardboardEnchantmentStorage(ItemMeta im) {
 		super(im);
-		EnchantmentStorageMeta em = (EnchantmentStorageMeta)im;
+		EnchantmentStorageMeta em = (EnchantmentStorageMeta) im;
 		HashMap<CardboardEnchantment, Integer> map = new HashMap<CardboardEnchantment, Integer>();
-		 
-        Map<Enchantment, Integer> enchantments = em.getStoredEnchants();
- 
-        for(Enchantment enchantment : enchantments.keySet()) {
-            map.put(new CardboardEnchantment(enchantment), enchantments.get(enchantment));
-        }
-        stored = map;
+
+		Map<Enchantment, Integer> enchantments = em.getStoredEnchants();
+
+		for (Enchantment enchantment : enchantments.keySet()) {
+			map.put(new CardboardEnchantment(enchantment),
+					enchantments.get(enchantment));
+		}
+		this.stored = map;
 	}
-	
+
 	@Override
 	public ItemMeta unbox(Material material) {
-		EnchantmentStorageMeta im = (EnchantmentStorageMeta)super.unbox(material);
-HashMap<Enchantment, Integer> map = new HashMap<Enchantment, Integer>();
-        
-        for(CardboardEnchantment cEnchantment : stored.keySet()) {
-            map.put(cEnchantment.unbox(), stored.get(cEnchantment));
-        }
- 
-        for(Entry<Enchantment, Integer> e : map.entrySet()){
-        	im.addEnchant(e.getKey(),e.getValue(), true);
-        }
+		EnchantmentStorageMeta im = (EnchantmentStorageMeta) super
+				.unbox(material);
+		HashMap<Enchantment, Integer> map = new HashMap<Enchantment, Integer>();
+
+		for (CardboardEnchantment cEnchantment : this.stored.keySet()) {
+			map.put(cEnchantment.unbox(), this.stored.get(cEnchantment));
+		}
+
+		for (Entry<Enchantment, Integer> e : map.entrySet()) {
+			im.addEnchant(e.getKey(), e.getValue(), true);
+		}
 		return im;
 	}
 

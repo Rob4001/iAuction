@@ -8,29 +8,29 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class GUIListener implements Listener {
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onInventoryClick(InventoryClickEvent e){
-		
+	public void onInventoryClick(InventoryClickEvent e) {
+
 		InventoryHolder holder = e.getInventory().getHolder();
-		
-		if(holder instanceof BasicInterface){
-			((BasicInterface)holder).onClick(e);
+
+		if (holder instanceof BasicInterface) {
+			((BasicInterface) holder).onClick(e);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onInventoryClose(InventoryCloseEvent e){
-		
+	public void onInventoryClose(InventoryCloseEvent e) {
+
 		InventoryHolder holder = e.getInventory().getHolder();
-		
-		if(holder instanceof BasicInterface){
-			((BasicInterface)holder).onClose(e);
+
+		if (holder instanceof BasicInterface) {
+			((BasicInterface) holder).onClose(e);
 		}
 	}
-	
-	public static void cancelInventoryClickEvent( InventoryClickEvent event ) {
-		event.setCancelled( true );
+
+	public static void cancelInventoryClickEvent(InventoryClickEvent event) {
+		event.setCancelled(true);
 	}
 
 }
