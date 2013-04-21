@@ -258,4 +258,18 @@ public class iAuction extends JavaPlugin implements Listener {
 		return false;
 	}
 
+	public static void charge(Economy eco, String name, double bid) {
+
+String fee = iAuction.getInstance().getConfig().getString("bid.fee");
+if (fee.contains("%")){
+	fee = fee.replace("%", "");
+	int f = Integer.parseInt(fee);
+	bid -= f;
+}else{
+	bid = bid - iAuction.getInstance().getConfig().getInt("bid.fee");
+}
+		eco.withdrawPlayer(name,bid);
+		
+	}
+
 }

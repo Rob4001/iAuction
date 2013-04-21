@@ -3,6 +3,7 @@ eco:
 bid:
   sbidenable: true
   minincrement: 5
+  fee: 0
 antisnipe:
   enabled: true
   endtime: 10
