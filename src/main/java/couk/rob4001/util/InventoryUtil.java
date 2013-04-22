@@ -63,14 +63,14 @@ public class InventoryUtil {
 		BasicTempInterface tmp = new BasicTempInterface();
 
 		Inventory inv = Bukkit.createInventory(tmp, iAuction.getInstance()
-				.getConfig().getInt("start.rows") * 9, player.getDisplayName());
+				.getConfig().getInt("start.rows") * 9, "Temp");
 		ArrayList<CardboardBox> box = iAuction.getInstance().lots.get(player
 				.getName());
 		ItemStack[] is = new ItemStack[box.size()];
 		for (int i = 0; i < box.size(); i++) {
 			is[i] = box.get(i).unbox();
 		}
-
+		changeTitle(inv, player.getDisplayName());
 		inv.setContents(is);
 		tmp.setInv(inv);
 
