@@ -70,7 +70,7 @@ public class InventoryUtil {
 		for (int i = 0; i < box.size(); i++) {
 			is[i] = box.get(i).unbox();
 		}
-		changeTitle(inv, player.getDisplayName());
+		inv = changeTitle(inv, player.getDisplayName());
 		inv.setContents(is);
 		tmp.setInv(inv);
 

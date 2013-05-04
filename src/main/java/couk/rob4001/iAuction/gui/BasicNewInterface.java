@@ -17,6 +17,7 @@ public class BasicNewInterface extends BasicInterface {
 	BasicNewLayout layout;
 	private double price;
 	private int time;
+	private boolean started = false;
 
 	public BasicNewInterface(BasicNewLayout layout, double price, int time) {
 		this.price = price;
@@ -38,8 +39,7 @@ public class BasicNewInterface extends BasicInterface {
 		if (e.getWhoClicked() instanceof Player) {
 			Player p = (Player) e.getWhoClicked();
 			if (e.getRawSlot() == this.layout.acceptSlot) {
-				p.closeInventory();
-				GUIListener.cancelInventoryClickEvent(e);
+				
 
 				this.layout.cleanInventory(this.inventory);
 				int count = 0;
@@ -54,6 +54,9 @@ public class BasicNewInterface extends BasicInterface {
 				} else {
 					Messaging.playerMessage(p, "start.noitems");
 				}
+				started = true;
+				p.closeInventory();
+				GUIListener.cancelInventoryClickEvent(e);
 			}
 		}
 
@@ -61,6 +64,7 @@ public class BasicNewInterface extends BasicInterface {
 
 	@Override
 	public void onClose(InventoryCloseEvent e) {
+		if(!started){
 		if (e.getPlayer() instanceof Player) {
 			Player p = (Player) e.getPlayer();
 
@@ -71,6 +75,7 @@ public class BasicNewInterface extends BasicInterface {
 					p.getWorld().dropItemNaturally(p.getLocation(), item);
 				}
 			}
+		}
 		}
 
 	}
