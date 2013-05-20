@@ -90,6 +90,12 @@ public class Auction implements Runnable, Serializable {
 
 	public void stop() {
 		if (this.winner != null) {
+			if (this.eco.getBalance(winner.getName())< this.bid){
+				Messaging.broadcast("stop.winnerloss", this.winner.getName());
+				this.winner = null;
+				this.stop();
+				return;
+			}
 			iAuction.chargedDeposit(this.eco, this.owner, this.bid);
 			this.eco.withdrawPlayer(this.winner.getName(), this.bid);
 

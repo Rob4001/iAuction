@@ -8,3 +8,19 @@ commands:
   auction:
     description: Manages auctions
     usage: /<command> help - show auctions help
+permissions:
+  auction.start:
+    description: Allows use of the auction start command.
+    default: true
+  auction.listen:
+    description: Allows use of the auction listen command.
+    default: true
+  auction.mute:
+    description: Allows use of the auction mute command.
+    default: true
+  auction.bid:
+    description: Allows use of the auction bid command.
+    default: true
+  auction.admin:
+    description: Allows use of iauction admin commands.
+    default: op

@@ -18,5 +18,6 @@ start:
   timehigh: 120
   pricelow: 10
   pricehigh: 1000
+listendefault: false
   
   

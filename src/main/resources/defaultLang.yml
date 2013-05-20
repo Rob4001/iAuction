@@ -17,6 +17,7 @@ stop:
   nowinner: 'There is no winner'
   returned: 'Your items are returned to you {n} use &a/auction collect &fto retereive items'
   winner: 'The winner is {0}'
+  winnerloss: 'This Auction had a winner: {0} but they have lost their bidding money. Auction Invalidated'
   enjoy: 'You have won use /auction collect  to retreve items'
   sold: 'Your items have been sold to {0}'
 auction:
