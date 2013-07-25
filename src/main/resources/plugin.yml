@@ -1,6 +1,6 @@
 name: iAuction
 main: couk.rob4001.iAuction.iAuction
-version: 5.0.5
+version: 5.0.6
 author: Rob4001
 description: Auctions for Bukkit Original by Zazara107
 depend: [Vault]
