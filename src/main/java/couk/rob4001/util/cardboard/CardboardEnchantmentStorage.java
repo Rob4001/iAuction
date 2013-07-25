@@ -42,7 +42,7 @@ public class CardboardEnchantmentStorage extends CardboardMeta {
 		}
 
 		for (Entry<Enchantment, Integer> e : map.entrySet()) {
-			im.addEnchant(e.getKey(), e.getValue(), true);
+			im.addStoredEnchant(e.getKey(), e.getValue(), true);
 		}
 		return im;
 	}

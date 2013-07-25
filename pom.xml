@@ -4,7 +4,7 @@
 
 	<groupId>couk.rob4001</groupId>
 	<artifactId>iAuction</artifactId>
-	<version>5.0.5</version>
+	<version>5.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>iAuction</name>
@@ -18,13 +18,13 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.5.2-R0.1</version>
+			<version>1.6.2-R0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.25-SNAPSHOT</version>
+			<version>1.2.27-SNAPSHOT</version>
 			<scope>compile</scope>
 <!-- 			<systemPath>${basedir}/lib/Vault.jar</systemPath> -->
 		</dependency>
@@ -57,6 +57,10 @@
 			<name>Spout Public Repository</name>
 			<url>http://nexus.spout.org/content/groups/public/</url>
 		</repository>
+		<repository>
+            <id>vault-repo</id>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+        </repository>
 	</repositories>
 
 	<build>
