@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import junit.framework.Assert;
 
-import net.minecraft.server.EnchantmentThorns;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -32,7 +30,7 @@ import couk.rob4001.util.cardboard.CardboardBox;
 
 
 @RunWith(PowerMockRunner.class)
-public class CardboardBoxTests {
+public class CardboardBoxTest {
 
 	@Test
 	public void test() {

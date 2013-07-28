@@ -6,10 +6,13 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.minecraft.server.v1_6_R2.Enchantment;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.craftbukkit.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.v1_6_R2.inventory.CraftItemFactory;
+
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
 
@@ -90,7 +93,7 @@ public class TestServer implements InvocationHandler {
             Bukkit.setServer(instance);
             server.pluginManager = new SimplePluginManager(instance, new SimpleCommandMap(instance));
             //Load Enchantments
-            net.minecraft.server.Enchantment d = net.minecraft.server.Enchantment.DIG_SPEED;
+           Enchantment d = Enchantment.DIG_SPEED;
         } catch (Throwable t) {
             throw new Error(t);
         }
