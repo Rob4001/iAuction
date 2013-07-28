@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Random;
+
 import junit.framework.Assert;
 
 import org.bukkit.Bukkit;
@@ -40,55 +43,86 @@ public class CardboardBoxTest {
 		for(Material mat:Material.values()){
 			if(mat == Material.AIR) continue;
 			System.out.println("Testing : " + mat.toString());
-			ItemStack item = new ItemStack(mat);
+			ItemStack item = createItem(mat);
 			
-			ItemMeta im = Bukkit.getServer().getItemFactory().getItemMeta(mat);
-			if (im instanceof BookMeta)
-				((BookMeta)im).addPage("Hello World");
-			if (im instanceof LeatherArmorMeta)
-				((LeatherArmorMeta)im).setColor(Color.AQUA);
-			if (im instanceof MapMeta)
-				((MapMeta)im).setScaling(true);
-			if (im instanceof SkullMeta)
-				((SkullMeta)im).setOwner("Rob4001");
-			if (im instanceof FireworkMeta)
-				((FireworkMeta)im).setPower(2);
-			if (im instanceof FireworkEffectMeta)
-				((FireworkEffectMeta)im).setEffect(FireworkEffect.builder().flicker(true).withColor(Color.GREEN).build());
-			if (im instanceof EnchantmentStorageMeta)
-				((EnchantmentStorageMeta)im).addStoredEnchant(Enchantment.DIG_SPEED, 1, true);
-			item.setItemMeta(im);
+			boxandunbox(new ItemStack[]{item});
 			
-			CardboardBox box = new CardboardBox(item);
 			
+		}
+		ArrayList<Material> mats = new ArrayList<Material>();
+		for(Material mat: Material.values()){
+			mats.add(mat);
+		}
+		Random rand = new Random();
+		System.out.println("Testing Random Combinations :D");
+		for(int x=1; x<50;x++){
+			ItemStack[] items = new ItemStack[x];
+			for(int y=0; y<x;y++){
+				items[y] = createItem(mats.get(rand.nextInt(mats.size()-1)+1));
+			}
+			boxandunbox(items);
+		}
+	}
+
+	private void boxandunbox(ItemStack[] items) {
+		ArrayList<CardboardBox> boxes = new ArrayList<CardboardBox>();
+		for(ItemStack item:items){
+			boxes.add(new CardboardBox(item));
+		}
+		 
+		
+		try {
+			FileOutputStream fos = new FileOutputStream(new File("lots.auction"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(boxes);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ArrayList<CardboardBox> newboxes = null;
+		if (new File("lots.auction").exists()) {
 			try {
-				FileOutputStream fos = new FileOutputStream(new File("lots.auction"));
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(box);
-				oos.close();
+				FileInputStream fis = new FileInputStream(new File("lots.auction"));
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				newboxes = (ArrayList<CardboardBox>) ois
+						.readObject();
+				ois.close();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			CardboardBox newbox = null;
-			if (new File("lots.auction").exists()) {
-				try {
-					FileInputStream fis = new FileInputStream(new File("lots.auction"));
-					ObjectInputStream ois = new ObjectInputStream(fis);
-					newbox = (CardboardBox) ois
-							.readObject();
-					ois.close();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 
-			}
-			
-			ItemStack newitem = newbox.unbox();
-			
-			Assert.assertEquals(item, newitem);
 		}
+		
+		for(int x=0;x<items.length;x++){
+			Assert.assertEquals(items[x], newboxes.get(x).unbox());
+		}
+		
+		
+		
+	}
+
+	private ItemStack createItem(Material mat) {
+		ItemStack item = new ItemStack(mat);
+		
+		ItemMeta im = Bukkit.getServer().getItemFactory().getItemMeta(mat);
+		if (im instanceof BookMeta)
+			((BookMeta)im).addPage("Hello World");
+		if (im instanceof LeatherArmorMeta)
+			((LeatherArmorMeta)im).setColor(Color.AQUA);
+		if (im instanceof MapMeta)
+			((MapMeta)im).setScaling(true);
+		if (im instanceof SkullMeta)
+			((SkullMeta)im).setOwner("Rob4001");
+		if (im instanceof FireworkMeta)
+			((FireworkMeta)im).setPower(2);
+		if (im instanceof FireworkEffectMeta)
+			((FireworkEffectMeta)im).setEffect(FireworkEffect.builder().flicker(true).withColor(Color.GREEN).build());
+		if (im instanceof EnchantmentStorageMeta)
+			((EnchantmentStorageMeta)im).addStoredEnchant(Enchantment.DIG_SPEED, 1, true);
+		item.setItemMeta(im);
+		return item;
 	}
 
 }
