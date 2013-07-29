@@ -25,20 +25,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import couk.rob4001.util.cardboard.CardboardBox;
 
-
-@RunWith(PowerMockRunner.class)
 public class CardboardBoxTest {
+	
+	@BeforeClass
+	public static void startServer(){
+		//Implement mock server
+		TestServer.getInstance();
+	}
 
 	@Test
 	public void test() {
-		//Implement mock server
-		TestServer.getInstance();
+		
+		
 		
 		for(Material mat:Material.values()){
 			if(mat == Material.AIR) continue;
