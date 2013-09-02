@@ -153,6 +153,7 @@ public class iAuction extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		if (this.getConfig().getBoolean("listendefault")&&!this.listeners.contains(e.getPlayer().getName())) {
+			listeners.add(e.getPlayer().getName());
 			ChatManager.addListener(e.getPlayer());
 		}
 		if (this.lots.keySet().contains(e.getPlayer().getName())) {
