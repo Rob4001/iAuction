@@ -54,6 +54,7 @@ public class ChatManager {
 	}
 
 	public static void addListener(Player p) {
+		
 		for (Chat<?> chat : chats) {
 			chat.addListener(p);
 		}

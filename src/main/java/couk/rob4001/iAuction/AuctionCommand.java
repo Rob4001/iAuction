@@ -35,7 +35,7 @@ public class AuctionCommand implements CommandExecutor {
 		String main = args.removeFirst();
 
 		if (main.equalsIgnoreCase("start") || main.equalsIgnoreCase("s")) {
-			ChatManager.addListener(player);
+			ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 			if (!player.hasPermission("auction.start")) {
 				Messaging.playerMessage(player, "error.perm");
 				return true;
@@ -95,7 +95,7 @@ public class AuctionCommand implements CommandExecutor {
 		}
 
 		if (main.equalsIgnoreCase("list") || main.equalsIgnoreCase("l")) {
-			ChatManager.addListener(player);
+			ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 			Iterator<Auction> it = iAuction.auctionQueue.iterator();
 			Integer i = 0;
 			Messaging.playerMessage(player, "auction.listtitle");
@@ -119,7 +119,7 @@ public class AuctionCommand implements CommandExecutor {
 				return true;
 			}
 			iAuction.getInstance().listeners.add(player.getName());
-			ChatManager.addListener(player);
+			ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 			Messaging.playerMessage(player, "listen.on");
 			return true;
 		}
@@ -132,6 +132,7 @@ public class AuctionCommand implements CommandExecutor {
 				iAuction.getInstance().listeners.remove(player.getName());
 			}
 			ChatManager.removeListener(player);
+			iAuction.getInstance().listeners.remove(player.getName());
 			Messaging.playerMessage(player, "listen.off");
 			return true;
 		}
@@ -163,24 +164,24 @@ public class AuctionCommand implements CommandExecutor {
 				} else {
 					auc.bid(player, args);
 				}
-				ChatManager.addListener(player);
+				ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 				return true;
 			}
 			if (main.equalsIgnoreCase("info")) {
 				((Player) sender).openInventory(new BasicInfoInterface(auc
 						.getInventory()).getInventory());
-				ChatManager.addListener(player);
+				ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 				return true;
 			}
 
 			if ((main.equalsIgnoreCase("end")) || (main.equalsIgnoreCase("e"))) {
-				ChatManager.addListener(player);
+				ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 				auc.end(player, args);
 				return true;
 			}
 			if ((main.equalsIgnoreCase("cancel"))
 					|| (main.equalsIgnoreCase("c"))) {
-				ChatManager.addListener(player);
+				ChatManager.addListener(player); iAuction.getInstance().listeners.add(player.getName());
 				auc.cancel(player, args);
 				return true;
 			}
